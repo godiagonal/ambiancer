@@ -1,25 +1,27 @@
 {
-  "name": "web-audio-accelerometer",
+  "name": "ambiancer",
   "version": "0.0.1",
-  "description": "A synthesizer in your browser!",
+  "description": "Web app for creating ambient sounds using Web Audio API",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://godiagonal@github.com/godiagonal/web-audio-accelerometer.git"
+    "url": "git+https://godiagonal@github.com/godiagonal/ambiancer.git"
   },
   "keywords": [
     "web",
     "audio",
-    "synth"
+    "synth",
+    "touch",
+    "ambience"
   ],
   "author": "Samuel Johansson",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/godiagonal/web-audio-accelerometer/issues"
+    "url": "https://github.com/godiagonal/ambiancer/issues"
   },
-  "homepage": "https://github.com/godiagonal/web-audio-synth#readme",
+  "homepage": "https://github.com/godiagonal/ambiancer#readme",
   "dependencies": {
     "bootstrap-slider": "^9.7.0",
     "chroma-js": "^1.2.1",
