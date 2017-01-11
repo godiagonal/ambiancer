@@ -1,0 +1,28 @@
+$font-family-base:          'Roboto', sans-serif;
+$font-weight-light:         300;
+$font-weight-normal:        400;
+$font-weight-medium:        500;
+$font-weight-bold:          700;
+
+$headings-font-weight:      $font-weight-light;
+
+$brand-primary:             #83AF9B;
+$text-color:                #5c5c5c;
+$bg-color:                  #d1b8a2;
+
+$btn-default-color:         $text-color;
+$btn-default-bg:            #f9f8f7;
+$btn-default-border:        #d7d6d6;
+$btn-default-hover-bg:      darken($btn-default-bg, 0%);
+$btn-default-hover-border:  darken($btn-default-border, 0%);
+
+$btn-primary-color:         #fff;
+$btn-primary-bg:            $brand-primary;
+$btn-primary-border:        darken(#99B898, 5%);
+$btn-primary-hover-bg:      darken($btn-primary-bg, 0%);
+$btn-primary-hover-border:  darken($btn-primary-border, 0%);
+
+$slider-bg:                 $btn-default-bg;
+$slider-selected-bg:        darken($slider-bg, 7%);
+$slider-handle-bg:          $brand-primary;
+$slider-border:             $btn-default-border;

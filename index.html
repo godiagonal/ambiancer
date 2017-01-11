@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Ambiancer</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="dist/bundle.css?v=6ss">
+</head>
+<body>
+
+<div id="intro" class="intro">
+    <div class="content">
+        <h1 class="title">Ambiancer</h1>
+        <p>Twinkly ambience for all occasions</p>
+
+        <h4 class="sub-title">Usage</h4>
+        <p><strong>Touch</strong> the colored surface to start playing</p>
+        <p>Use the <strong>slider</strong> to adjust the ambience level</p>
+        <p>Tilt device <strong>left and right</strong> to adjust stereo panning</p>
+        <p>Tilt device <strong>up and down</strong> to adjust lowpass filter</p>
+
+        <button id="close-intro" class="btn btn-block btn-outline">Got it!</button>
+    </div>
+</div>
+
+<canvas id="touch-pad" width="320" height="320"></canvas>
+
+<div class="controls">
+    <div class="form-group">
+        <input id="ambience-level" type="text" data-slider-id="ambience-level-slider" data-slider-min="0"
+               data-slider-max="100" data-slider-step="1" data-slider-value="50"/>
+    </div>
+    <div>
+        <button id="toggle-auto-play" class="btn btn-block btn-default">Auto play</button>
+    </div>
+</div>
+
+<script src="dist/bundle.js?v=affsfghgswgsfdsdfff"></script>
+</body>
+</html>

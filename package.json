@@ -1,0 +1,54 @@
+{
+  "name": "web-audio-accelerometer",
+  "version": "0.0.1",
+  "description": "A synthesizer in your browser!",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://godiagonal@github.com/godiagonal/web-audio-accelerometer.git"
+  },
+  "keywords": [
+    "web",
+    "audio",
+    "synth"
+  ],
+  "author": "Samuel Johansson",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/godiagonal/web-audio-accelerometer/issues"
+  },
+  "homepage": "https://github.com/godiagonal/web-audio-synth#readme",
+  "dependencies": {
+    "bootstrap-slider": "^9.7.0",
+    "chroma-js": "^1.2.1",
+    "jquery": "^3.1.1",
+    "octavian": "^2.2.0",
+    "soundbank-reverb": "^1.1.2",
+    "stereo-panner-node": "^1.3.0"
+  },
+  "devDependencies": {
+    "babel-eslint": "^7.1.1",
+    "babel-preset-es2015": "^6.18.0",
+    "babelify": "^7.3.0",
+    "bootstrap-sass": "3.3.7",
+    "browserify": "^13.3.0",
+    "eslint": "^3.12.2",
+    "eslint-config-airbnb": "^13.0.0",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-jsx-a11y": "^2.2.3",
+    "eslint-plugin-react": "^6.8.0",
+    "gulp": "^3.9.1",
+    "gulp-eslint": "^3.0.1",
+    "gulp-livereload": "^3.8.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^3.0.0",
+    "gulp-sourcemaps": "^1.9.1",
+    "gulp-uglify": "^2.0.0",
+    "gulp-watch": "^4.3.11",
+    "path": "^0.12.7",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0"
+  }
+}
