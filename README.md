@@ -1,5 +1,5 @@
 # Ambiancer
-Web app for creating ambient sounds using the Web Audio API and device rotation events.
+Audio-visual experiment for creating ambient sounds using the Web Audio API and device orientation events.
 
 Live site: http://godiagonal.com/ambiancer/
 
