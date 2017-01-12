@@ -1,5 +1,5 @@
 # Ambiancer
-Audio-visual experiment for creating ambient sounds using the Web Audio API and device orientation events.
+Audio-visual experiment for creating ambient sounds using the Web Audio API and device orientation events. All sounds are created using programmed oscillators - no samples used!
 
 Live site: http://godiagonal.com/ambiancer/
 
