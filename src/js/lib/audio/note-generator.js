@@ -1,9 +1,13 @@
 import Note from './note';
 
 export default class NoteGenerator {
-  constructor(scale, maxOctaves = 2) {
+  constructor(scale, octaveRange = [1, 2]) {
+    if (!scale || !scale.length) {
+      console.error('No notes in scale.');
+    }
+
     this.scale = scale;
-    this.maxOctaves = maxOctaves;
+    this.octaveRange = octaveRange;
   }
   
   random() {
@@ -20,14 +24,9 @@ export default class NoteGenerator {
       return null;
     }
     
-    let relOctave = Math.round((1 - y) * this.maxOctaves);
+    const octaveSpan = this.octaveRange[1] - this.octaveRange[0];
+    const octave = Math.round((1 - y) * octaveSpan + this.octaveRange[0]);
     
-    if (relOctave < 0) {
-      relOctave = 0;
-    } else if (relOctave > this.maxOctaves) {
-      relOctave = this.maxOctaves;
-    }
-    
-    return new Note(note, relOctave);
+    return new Note(note, octave);
   }
 }

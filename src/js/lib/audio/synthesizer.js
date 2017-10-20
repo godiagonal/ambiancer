@@ -12,8 +12,9 @@ export default class Synthesizer {
     this.polyphonic = polyphonic;
     this.waveShape = waveShape;
     this.oscillators = {};
-    this.octave = 3;
-    this.autoPlayInterval = 250;
+    this.baseOctave = 0;
+    this.autoPlayNoteGenerator = null;
+    this.autoPlayBpm = 240;
     
     this.audioBus = new AudioBus();
     this.audioBus.connect(destination);
@@ -22,32 +23,58 @@ export default class Synthesizer {
     this.lastFrequency = null;
   }
   
-  toggleAutoPlay(noteGenerator) {
+  toggleAutoPlay() {
     if (this.autoPlayTimeout) {
-      clearInterval(this.autoPlayTimeout);
-      this.autoPlayTimeout = null;
-      this.releaseAll();
+      this.stopAutoPlay();
     } else {
-      this.autoPlayTimeout = setInterval(() => {
-        const note = noteGenerator.random();
-        this.playNote(note);
-      }, this.autoPlayInterval);
+      this.startAutoPlay();
     }
     
     if (this.handleToggleAutoPlay) {
       this.handleToggleAutoPlay(Boolean(this.autoPlayTimeout));
     }
   }
+
+  stopAutoPlay() {
+    clearInterval(this.autoPlayTimeout);
+    this.autoPlayTimeout = null;
+    this.releaseAll();
+  }
+
+  startAutoPlay() {
+    if (!this.autoPlayNoteGenerator) {
+      console.error('Missing note generator.');
+      return;
+    }
+
+    const interval = 60000 / this.autoPlayBpm; // 60,000ms (60s) / bpm
+    this.autoPlayTimeout = setInterval(() => {
+      const note = this.autoPlayNoteGenerator.random();
+      this.playNote(note);
+    }, interval);
+  }
+
+  setAutoPlayNoteGenerator(noteGenerator) {
+    this.autoPlayNoteGenerator = noteGenerator;
+  }
+  
+  setAutoPlayBpm(bpm) {
+    this.autoPlayBpm = bpm;
+    if (this.autoPlayTimeout) {
+      this.stopAutoPlay();
+      this.startAutoPlay();
+    }
+  }
   
   setOctave(direction) {
-    if (direction === 'up' && this.octave < 6) {
-      this.octave += 1;
-    } else if (direction === 'down' && this.octave > 1) {
-      this.octave -= 1;
+    if (direction === 'up' && this.baseOctave < 6) {
+      this.baseOctave += 1;
+    } else if (direction === 'down' && this.baseOctave > 1) {
+      this.baseOctave -= 1;
     }
     
     if (this.handleOctaveChanged) {
-      this.handleOctaveChanged(this.octave);
+      this.handleOctaveChanged(this.baseOctave);
     }
   }
   
@@ -64,7 +91,7 @@ export default class Synthesizer {
       this.releaseNote(this.lastNote);
     }
     
-    const octave = this.octave + note.relOctave;
+    const octave = this.baseOctave + note.octave;
     this.oscillatorForNote(`${note.note}${octave}`).start();
     
     this.lastNote = note;
@@ -75,7 +102,7 @@ export default class Synthesizer {
   }
   
   releaseNote(note) {
-    const octave = this.octave + note.relOctave;
+    const octave = this.baseOctave + note.octave;
     this.oscillatorForNote(`${note.note}${octave}`).stop();
     
     if (this.handleReleaseNote) {
@@ -154,6 +181,6 @@ export default class Synthesizer {
   
   onOctaveChanged(callback) {
     this.handleOctaveChanged = callback;
-    callback(this.octave);
+    callback(this.baseOctave);
   }
 }

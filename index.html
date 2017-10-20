@@ -30,16 +30,77 @@
 
 <canvas id="touch-pad" width="320" height="320"></canvas>
 
-<div class="controls">
+<div id="controls" class="controls">
     <div class="form-group">
-        <input id="ambience-level" type="text" data-slider-id="ambience-level-slider" data-slider-min="0"
-               data-slider-max="100" data-slider-step="1" data-slider-value="50"/>
+        <label>Ambience level</label>
+        <input id="ambience-level" type="text" data-slider-id="ambience-level-slider" data-slider-step="1"
+                data-slider-min="0" data-slider-max="100" data-slider-value="60"/>
     </div>
-    <div>
+    <div class="form-group">
         <button id="toggle-auto-play" class="btn btn-block btn-default">Auto play</button>
+    </div>
+    <div class="text-center">
+        <a href="#" id="toggle-controls-more" class="toggle-controls-more">
+            <span class="glyphicon" aria-hidden="true"></span>
+        </a>
+    </div>
+    <div id="controls-more" class="controls-more collapse">
+        <hr>
+        <div class="form-group">
+            <label>Notes</label>
+            <div class="scale">
+                <div class="scale-note">
+                    A<br><input type="checkbox" name="scale[]" value="A" checked>
+                </div>
+                <div class="scale-note">
+                    A#<br><input type="checkbox" name="scale[]" value="A#">
+                </div>
+                <div class="scale-note">
+                    B<br><input type="checkbox" name="scale[]" value="B">
+                </div>
+                <div class="scale-note">
+                    C<br><input type="checkbox" name="scale[]" value="C">
+                </div>
+                <div class="scale-note">
+                    C#<br><input type="checkbox" name="scale[]" value="C#">
+                </div>
+                <div class="scale-note">
+                    D<br><input type="checkbox" name="scale[]" value="D" checked>
+                </div>
+                <div class="scale-note">
+                    D#<br><input type="checkbox" name="scale[]" value="D#">
+                </div>
+                <div class="scale-note">
+                    E<br><input type="checkbox" name="scale[]" value="E" checked>
+                </div>
+                <div class="scale-note">
+                    F<br><input type="checkbox" name="scale[]" value="F">
+                </div>
+                <div class="scale-note">
+                    F#<br><input type="checkbox" name="scale[]" value="F#" checked>
+                </div>
+                <div class="scale-note">
+                    G<br><input type="checkbox" name="scale[]" value="G" checked>
+                </div>
+                <div class="scale-note">
+                    G#<br><input type="checkbox" name="scale[]" value="G#">
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Octave range</label>
+            <input id="octave-range" type="text" data-slider-id="octave-range-slider" data-slider-step="1"
+                    data-slider-min="1" data-slider-max="7" data-slider-value="[3,6]" data-range="true"/>
+        </div>
+        <div class="form-group">
+            <label>BPM</label>
+            <input id="bpm" type="text" data-slider-id="bpm-slider" data-slider-step="1"
+                    data-slider-min="30" data-slider-max="360" data-slider-value="240"/>
+        </div>
     </div>
 </div>
 
 <script src="dist/bundle.js?v=affsfghgswgsffdssgdfff"></script>
+
 </body>
 </html>

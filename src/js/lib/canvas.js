@@ -3,7 +3,6 @@ import ThrottleEvent from './throttle-event';
 
 const pointerColor = '#83AF9B';
 const pointerSize = 25;
-const controlsHeight = 110;
 const defaultTransitionDuration = '0.1s';
 
 const bgColorScales = {
@@ -31,6 +30,7 @@ export default class Canvas {
   }
   
   resize() {
+    const controlsHeight = document.getElementById('controls').clientHeight;
     const winWidth = document.documentElement.clientWidth || window.innerWidth || 0;
     const winHeight = document.documentElement.clientHeight || window.innerHeight || 0;
     this.elem.width = winWidth;

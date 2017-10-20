@@ -142,3 +142,48 @@ label {
     @include box-shadow(none);
   }
 }
+
+.scale {
+  @include clearfix();
+  max-width: 500px;
+  margin: 0 auto;
+
+  &-note {
+    float: left;
+    width: calc(8.33%);
+    text-align: center;
+  }
+}
+
+.toggle-controls-more {
+  display: block;
+  padding: 12px;
+
+  &:after {
+    content: 'More';
+  }
+
+  &:hover,
+  &:focus,
+  &:active {
+    text-decoration: none;
+  }
+
+  > .glyphicon:before {
+    content: '\e259';
+  }
+
+  &.open {
+    &:after {
+      content: 'Less';
+    }
+    
+    > .glyphicon:before {
+      content: '\e260';
+    }
+  }
+}
+
+hr {
+  margin: 15px 0;
+}

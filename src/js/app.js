@@ -12,7 +12,6 @@ import Delay from './lib/audio/effects/delay';
 import Panner from './lib/audio/effects/panner';
 
 const synth = new Synthesizer(false, 'sawtooth');
-const noteGenerator = new NoteGenerator(['G', 'A', 'D', 'E', 'F#'], 3);
 const canvas = new Canvas('touch-pad');
 
 const distortion = new Distortion('distortion');
@@ -21,6 +20,8 @@ const reverb2 = new Reverb('reverb2');
 const delay = new Delay('delay');
 const lowpassFilter = new LowpassFilter('lowpass');
 const panner = new Panner('panner');
+
+let noteGenerator = null;
 
 synth.audioBus.setFxChain([
   distortion,
@@ -48,9 +49,22 @@ Gui.onCloseIntro(() => {
   });
 });
 
+Gui.onControlsSizeChanged(() => {
+  canvas.resize();
+});
+
 Gui.onToggleAutoPlay(() => {
-  synth.toggleAutoPlay(noteGenerator);
+  synth.toggleAutoPlay();
   canvas.toggleAnimateBg();
+});
+
+Gui.onScaleOrOctaveRangeChanged((scale, octaveRange) => {
+  noteGenerator = new NoteGenerator(scale, octaveRange);
+  synth.setAutoPlayNoteGenerator(noteGenerator);
+});
+
+Gui.onBpmChanged((bpm) => {
+  synth.setAutoPlayBpm(bpm);
 });
 
 Gui.onAmbienceLevelChanged((level) => {

@@ -1,6 +1,6 @@
 export default class Note {
-  constructor(note, relOctave) {
+  constructor(note, octave) {
     this.note = note;
-    this.relOctave = relOctave;
+    this.octave = octave;
   }
 }
