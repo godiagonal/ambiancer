@@ -1,0 +1,24 @@
+// import { AppBar, Toolbar, Typography } from 'material-ui';
+// import { MuiThemeProvider } from 'material-ui/styles';
+// import * as React from 'react';
+// // import createCustomMuiTheme from '../createCustomMuiTheme';
+
+// const theme = createCustomMuiTheme({});
+
+// class App extends React.Component {
+//   public render() {
+//     return (
+//       <MuiThemeProvider theme={theme}>
+//         <AppBar color="default">
+//           <Toolbar>
+//             <Typography variant="title" color="inherit">
+//               Title
+//             </Typography>
+//           </Toolbar>
+//         </AppBar>
+//       </MuiThemeProvider>
+//     );
+//   }
+// }
+
+// export default App;
