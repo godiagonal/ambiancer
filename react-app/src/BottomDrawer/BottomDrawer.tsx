@@ -1,9 +1,6 @@
 /* tslint:disable:no-console */
 
 import {
-  Paper,
-} from '@material-ui/core';
-import {
   StyleRulesCallback,
   Theme,
   withStyles,
@@ -18,10 +15,8 @@ const styles: StyleRulesCallback = (theme: Theme) => ({
     position: 'fixed',
     bottom: 0,
     width: '100%',
-    // backgroundColor: 'white',
-    // position: 'fixed',
-    // bottom: 0,
-    // width: '100%',
+    maxHeight: '100vh',
+    backgroundColor: theme.palette.background.paper,
     // [theme.breakpoints.up('md')]: {
     //   width: '240px',
     //   position: 'relative',
@@ -29,117 +24,123 @@ const styles: StyleRulesCallback = (theme: Theme) => ({
     //   left: 0,
     // },
   },
-  drawer: {
-    backgroundColor: 'red',
-    width: '100%',
+  content: {
+    padding: theme.spacing.unit * 2,
   },
 });
 
+type State = {
+  open: boolean,
+}
+
 type Props = {
   children: any,
-  openHeight: number,
   closedHeight: number,
   open?: boolean,
   transitionDuration?: number,
   snapThreshold?: number,
 }
 
-type PropsWithStyles = Props & WithStyles<'root' | 'drawer'> & WithTheme;
+type PropsWithStyles = Props & WithStyles<'root' | 'content'> & WithTheme;
 
-class BottomDrawer extends React.Component<PropsWithStyles, {}> {
-  static defaultProps: Partial<PropsWithStyles> = {
+class BottomDrawer extends React.Component<PropsWithStyles, State> {
+  static defaultProps: Partial<Props> = {
     open: false,
     transitionDuration: 400,
     snapThreshold: 0.2,
   };
 
-  private container: HTMLDivElement;
-  private height = this.props.open ? this.props.openHeight : this.props.closedHeight;
+  private containerRef: HTMLDivElement;
+  private contentRef: HTMLDivElement;
+  private contentHeight = 0;
+
+  constructor(props: PropsWithStyles) {
+    super(props);
+
+    this.state = {
+      open: props.open!,
+    };
+  }
 
   componentDidMount() {
-    this.setDrawerHeight(this.height);
+    console.log('componentDidMount', this.contentRef.clientHeight);
+
+    // Store height from content element so we don't have to get it from
+    // the DOM every time we want to update the height (i.e. when swiping)
+    this.contentHeight = this.contentRef.clientHeight;
+
+    this.updateContainerHeight(0);
+  }
+
+  componentDidUpdate(prevProps: PropsWithStyles, prevState: State) {
+    console.log('componentDidUpdate', prevState, this.state, this.contentRef.clientHeight);
+
+    // Get the current height of the content element since it might have
+    // changed due to prop changes
+    this.contentHeight = this.contentRef.clientHeight;
+
+    this.updateContainerHeight(0, this.props.theme.transitions.create(
+      'height',
+      { duration: this.props.transitionDuration },
+    ));
   }
 
   private swipingUp = (e: any, absY: number) => {
-    // console.log("Up", this.height + absY);
-    const height = this.getNormHeight(this.height + absY);
-    this.setDrawerHeight(height);
+    this.updateContainerHeight(absY);
   }
 
   private swipingDown = (e: any, absY: number) => {
-    // console.log("Down", this.height - absY);
-    const height = this.getNormHeight(this.height - absY);
-    this.setDrawerHeight(height);
+    this.updateContainerHeight(-absY);
   }
 
   private swipedUp = (e: any, deltaY: number, isFlick: boolean) => {
-    if (this.height < this.props.openHeight) {
-      console.log("Up Done", deltaY, this.props.openHeight * this.props.snapThreshold!, isFlick);
-      const transition = this.getTransition();
-
-      if (isFlick) {
-        this.height = this.props.openHeight;
-      } else {
-        this.height = deltaY > this.props.openHeight * this.props.snapThreshold! ? this.props.openHeight : this.props.closedHeight;
-      }
-
-      this.setDrawerHeight(this.height, transition);
+    if (isFlick || deltaY > this.contentHeight * this.props.snapThreshold!) {
+      this.setState({ open: true });
+    } else {
+      this.setState({ open: false });
     }
   }
 
   private swipedDown = (e: any, deltaY: number, isFlick: boolean) => {
-    if (this.height > this.props.closedHeight) {
-      console.log("Down Done", -deltaY, this.props.openHeight * this.props.snapThreshold!, isFlick);
-      const transition = this.getTransition();
-
-      if (isFlick) {
-        this.height = this.props.closedHeight;
-      } else {
-        this.height = -deltaY > this.props.openHeight * this.props.snapThreshold! ? this.props.closedHeight : this.props.openHeight;
-      }
-      
-      this.setDrawerHeight(this.height, transition);
+    if (isFlick || -deltaY > this.contentHeight * this.props.snapThreshold!) {
+      this.setState({ open: false });
+    } else {
+      this.setState({ open: true });
     }
   }
 
-  private setDrawerHeight = (height: number, transition: string = '') => {
-    const containerStyle = this.container.style;
+  private updateContainerHeight = (offset: number, transition: string = '') => {
+    let height = this.state.open ? this.contentHeight : this.props.closedHeight;
+
+    // offset is used to set a height that is somewhere inbetween the min
+    // height (closed height) and the max height (content height)
+    if (offset !== 0) {
+      height += offset;
+      height = height > this.contentHeight ? this.contentHeight
+             : height < this.props.closedHeight ? this.props.closedHeight
+             : height;
+    }
+    
+    const containerStyle = this.containerRef.style;
 
     containerStyle.height = `${height}px`;
     containerStyle.webkitTransition = transition;
     containerStyle.transition = transition;
   }
 
-  private getNormHeight = (height: number) => {
-    return height > this.props.openHeight ? this.props.openHeight
-            : height < this.props.closedHeight ? this.props.closedHeight
-            : height;
-  }
-
-  private getTransition = () => {
-    return this.props.theme.transitions.create(
-              'height',
-              { duration: this.props.transitionDuration },
-            );
-  }
-
   render() {
     const { classes } = this.props;
 
     return (
-      <div className={classes.root}>
+      <div className={classes.root} ref={(containerRef: HTMLDivElement) => { this.containerRef = containerRef; }}>
         <Swipeable
           onSwipingUp={this.swipingUp}
           onSwipingDown={this.swipingDown}
           onSwipedUp={this.swipedUp}
           onSwipedDown={this.swipedDown}
         >
-          <div ref={(container: HTMLDivElement) => { this.container = container; }} style={{background: 'red'}}>
-            <Paper
-              square={true}
-              elevation={0}>
+          <div className={classes.content} ref={(contentRef: HTMLDivElement) => { this.contentRef = contentRef; }}>
               {this.props.children}
-            </Paper>
           </div>
         </Swipeable>
       </div>

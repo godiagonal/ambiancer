@@ -20,7 +20,20 @@ const styles: StyleRulesCallback = (theme: Theme) => ({
   },
 });
 
-class App extends React.Component<WithStyles<'root'>> {
+class App extends React.Component<WithStyles<'root'>, any> {
+
+  constructor(props: WithStyles<'root'>) {
+    super(props);
+
+    this.state = {
+      moreContent: false,
+    };
+  }
+
+  changeContent = () => {
+    this.setState({ moreContent: !this.state.moreContent });
+  }
+
   render() {
     return (
       <div className={this.props.classes.root}>
@@ -31,8 +44,17 @@ class App extends React.Component<WithStyles<'root'>> {
             </Typography>
           </Toolbar>
         </AppBar>
-        <BottomDrawer openHeight={500} closedHeight={50}>
-          This is injected content!
+        <BottomDrawer closedHeight={50}>
+          <button onClick={this.changeContent}>Show more content</button>
+          {this.state.moreContent ? 'This is mooooooooooooooooooooooooooo oooooooooooooooooooooooooooo oooooooooooooooooooooore' : ''}
+          <br /> This is injected content!
+          <br /> This is injected content!
+          <br /> This is injected content!
+          <br /> This is injected content!
+          <br /> This is injected content!
+          <br /> This is injected content!
+          <br /> This is injected content!
+          <br /> This is injected content!
           <br /> This is injected content!
           <br /> This is injected content!
           <br /> This is injected content!
