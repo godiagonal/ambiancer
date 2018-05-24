@@ -9,6 +9,7 @@ import {
 } from '@material-ui/core/styles';
 import * as React from 'react';
 import * as Swipeable from 'react-swipeable';
+import { debounce } from 'ts-debounce';
 
 const styles: StyleRulesCallback = (theme: Theme) => ({
   root: {
@@ -63,7 +64,7 @@ class BottomDrawer extends React.Component<PropsWithStyles, State> {
   }
 
   componentDidMount() {
-    console.log('componentDidMount', this.contentRef.clientHeight);
+    window.addEventListener('resize', this.resize);
 
     // Store height from content element so we don't have to get it from
     // the DOM every time we want to update the height (i.e. when swiping)
@@ -72,9 +73,11 @@ class BottomDrawer extends React.Component<PropsWithStyles, State> {
     this.updateContainerHeight(0);
   }
 
-  componentDidUpdate(prevProps: PropsWithStyles, prevState: State) {
-    console.log('componentDidUpdate', prevState, this.state, this.contentRef.clientHeight);
+  componentWillUnmount() {
+      window.removeEventListener('resize', this.resize);
+  }
 
+  componentDidUpdate() {
     // Get the current height of the content element since it might have
     // changed due to prop changes
     this.contentHeight = this.contentRef.clientHeight;
@@ -84,6 +87,13 @@ class BottomDrawer extends React.Component<PropsWithStyles, State> {
       { duration: this.props.transitionDuration },
     ));
   }
+
+  private resize = debounce(() => { 
+    // Get the current height of the content element since it might have
+    // changed due to window size changes
+    this.contentHeight = this.contentRef.clientHeight;
+    this.updateContainerHeight(0);
+  }, 100);
 
   private swipingUp = (e: any, absY: number) => {
     this.updateContainerHeight(absY);
