@@ -1,6 +1,9 @@
 /* tslint:disable:no-console */
 
 import {
+  Paper,
+} from '@material-ui/core';
+import {
   StyleRulesCallback,
   Theme,
   withStyles,
@@ -12,10 +15,19 @@ import * as Swipeable from 'react-swipeable';
 
 const styles: StyleRulesCallback = (theme: Theme) => ({
   root: {
-    backgroundColor: 'white',
     position: 'fixed',
     bottom: 0,
     width: '100%',
+    // backgroundColor: 'white',
+    // position: 'fixed',
+    // bottom: 0,
+    // width: '100%',
+    // [theme.breakpoints.up('md')]: {
+    //   width: '240px',
+    //   position: 'relative',
+    //   bottom: 'auto',
+    //   left: 0,
+    // },
   },
   drawer: {
     backgroundColor: 'red',
@@ -41,7 +53,7 @@ class BottomDrawer extends React.Component<PropsWithStyles, {}> {
     snapThreshold: 0.2,
   };
 
-  private drawer: HTMLDivElement;
+  private container: HTMLDivElement;
   private height = this.props.open ? this.props.openHeight : this.props.closedHeight;
 
   componentDidMount() {
@@ -91,11 +103,11 @@ class BottomDrawer extends React.Component<PropsWithStyles, {}> {
   }
 
   private setDrawerHeight = (height: number, transition: string = '') => {
-    const drawerStyle = this.drawer.style;
+    const containerStyle = this.container.style;
 
-    drawerStyle.height = `${height}px`;
-    drawerStyle.webkitTransition = transition;
-    drawerStyle.transition = transition;
+    containerStyle.height = `${height}px`;
+    containerStyle.webkitTransition = transition;
+    containerStyle.transition = transition;
   }
 
   private getNormHeight = (height: number) => {
@@ -122,8 +134,12 @@ class BottomDrawer extends React.Component<PropsWithStyles, {}> {
           onSwipedUp={this.swipedUp}
           onSwipedDown={this.swipedDown}
         >
-          <div className={classes.drawer} ref={(drawer: HTMLDivElement) => { this.drawer = drawer; }}>
-            {this.props.children}
+          <div ref={(container: HTMLDivElement) => { this.container = container; }} style={{background: 'red'}}>
+            <Paper
+              square={true}
+              elevation={0}>
+              {this.props.children}
+            </Paper>
           </div>
         </Swipeable>
       </div>
