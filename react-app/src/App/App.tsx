@@ -1,6 +1,6 @@
 import {
-  AppBar,
-  Toolbar,
+  Drawer,
+  Hidden,
   Typography,
 } from '@material-ui/core';
 import {
@@ -15,12 +15,30 @@ import withRoot from '../withRoot';
 
 const styles: StyleRulesCallback = (theme: Theme) => ({
   root: {
-    paddingTop: theme.spacing.unit * 20,
-    textAlign: 'center',
+    flexGrow: 1,
+    zIndex: 1,
+    overflow: 'hidden',
+    position: 'relative',
+    display: 'flex',
+    width: '100%',
+  },
+  drawerPaper: {
+    width: 240,
+    position: 'relative',
+  },
+  options: {
+    padding: theme.spacing.unit * 2,
+  },
+  content: {
+    flexGrow: 1,
+    backgroundColor: theme.palette.background.default,
+    padding: theme.spacing.unit * 3,
   },
 });
 
-class App extends React.Component<WithStyles<'root'>, any> {
+type Styles = WithStyles<'root' | 'drawerPaper' | 'options' | 'content'>;
+
+class App extends React.Component<Styles, any> {
 
   constructor(props: WithStyles<'root'>) {
     super(props);
@@ -35,18 +53,13 @@ class App extends React.Component<WithStyles<'root'>, any> {
   }
 
   render() {
-    return (
-      <div className={this.props.classes.root}>
-        <AppBar color="default">
-          <Toolbar>
-            <Typography variant="title" color="inherit">
-              Title
-            </Typography>
-          </Toolbar>
-        </AppBar>
-        <BottomDrawer closedHeight={50}>
+    const { classes } = this.props;
+
+    const options = (
+      <div className={classes.options}>
+        <Typography>
           <button onClick={this.changeContent}>Show more content</button>
-          {this.state.moreContent ? 'This is mooooooooooooooooooooooooooo oooooooooooooooooooooooooooo oooooooooooooooooooooore' : ''}
+          <br /> {this.state.moreContent ? 'This is mooooooooooooooooooooooooooo oooooooooooooooooooooooooooo oooooooooooooooooooooore' : ''}
           <br /> This is injected content!
           <br /> This is injected content!
           <br /> This is injected content!
@@ -62,7 +75,33 @@ class App extends React.Component<WithStyles<'root'>, any> {
           <br /> This is injected content!
           <br /> This is injected content!
           <br /> This is injected content!
-        </BottomDrawer>
+        </Typography>
+      </div>
+    );
+
+    return (
+      <div className={classes.root}>
+        <Hidden mdUp>
+          <BottomDrawer closedHeight={100}>
+            {options}
+          </BottomDrawer>
+        </Hidden>
+        <Hidden smDown>
+          <Drawer
+            variant="permanent"
+            open
+            classes={{
+              paper: classes.drawerPaper,
+            }}
+          >
+            {options}
+          </Drawer>
+        </Hidden>
+        <main className={classes.content}>
+          <Typography>
+            You think water moves fast? You should see ice.
+          </Typography>
+        </main>
       </div>
     );
   }

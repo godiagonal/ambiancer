@@ -15,18 +15,13 @@ const styles: StyleRulesCallback = (theme: Theme) => ({
   root: {
     position: 'fixed',
     bottom: 0,
+    left: 0,
+    right: 0,
     width: '100%',
     maxHeight: '100vh',
     backgroundColor: theme.palette.background.paper,
-    // [theme.breakpoints.up('md')]: {
-    //   width: '240px',
-    //   position: 'relative',
-    //   bottom: 'auto',
-    //   left: 0,
-    // },
-  },
-  content: {
-    padding: theme.spacing.unit * 2,
+    borderTop: `1px solid ${theme.palette.divider}`,
+    zIndex: theme.zIndex.drawer,
   },
 });
 
@@ -42,7 +37,7 @@ type Props = {
   snapThreshold?: number,
 }
 
-type PropsWithStyles = Props & WithStyles<'root' | 'content'> & WithTheme;
+type PropsWithStyles = Props & WithStyles<'root'> & WithTheme;
 
 class BottomDrawer extends React.Component<PropsWithStyles, State> {
   static defaultProps: Partial<Props> = {
@@ -149,7 +144,7 @@ class BottomDrawer extends React.Component<PropsWithStyles, State> {
           onSwipedUp={this.swipedUp}
           onSwipedDown={this.swipedDown}
         >
-          <div className={classes.content} ref={(contentRef: HTMLDivElement) => { this.contentRef = contentRef; }}>
+          <div ref={(contentRef: HTMLDivElement) => { this.contentRef = contentRef; }}>
               {this.props.children}
           </div>
         </Swipeable>
