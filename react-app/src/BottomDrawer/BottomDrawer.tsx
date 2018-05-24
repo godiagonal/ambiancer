@@ -6,7 +6,7 @@ import {
   withStyles,
   WithStyles,
   WithTheme,
-} from 'material-ui/styles';
+} from '@material-ui/core/styles';
 import * as React from 'react';
 import * as Swipeable from 'react-swipeable';
 

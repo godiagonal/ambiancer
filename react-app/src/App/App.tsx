@@ -2,13 +2,13 @@ import {
   AppBar,
   Toolbar,
   Typography,
-} from 'material-ui';
+} from '@material-ui/core';
 import {
   StyleRulesCallback,
   Theme,
   withStyles,
   WithStyles,
-} from 'material-ui/styles';
+} from '@material-ui/core/styles';
 import * as React from 'react';
 import BottomDrawer from '../BottomDrawer/BottomDrawer';
 import withRoot from '../withRoot';
