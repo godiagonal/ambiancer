@@ -1,7 +1,6 @@
 /* tslint:disable:no-console */
 
 import {
-  Button,
   Drawer,
   Hidden,
   Typography,
@@ -14,6 +13,8 @@ import {
 } from '@material-ui/core/styles';
 import * as React from 'react';
 import BottomDrawer from '../BottomDrawer/BottomDrawer';
+import PlayButton from '../PlayButton/PlayButton';
+import Settings from '../Settings/Settings';
 import withRoot from '../withRoot';
 
 const styles: StyleRulesCallback = (theme: Theme) => ({
@@ -29,9 +30,6 @@ const styles: StyleRulesCallback = (theme: Theme) => ({
     width: 240,
     position: 'relative',
   },
-  options: {
-    padding: theme.spacing.unit * 2,
-  },
   content: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
@@ -39,7 +37,7 @@ const styles: StyleRulesCallback = (theme: Theme) => ({
   },
 });
 
-type Styles = WithStyles<'root' | 'drawerPaper' | 'options' | 'content'>;
+type Styles = WithStyles<'root' | 'drawerPaper' | 'content'>;
 
 class App extends React.Component<Styles, any> {
 
@@ -47,51 +45,47 @@ class App extends React.Component<Styles, any> {
     super(props);
 
     this.state = {
-      moreContent: false,
-      open: false,
+      autoPlay: false,
+      bottomDrawerOpen: false,
+      bottomDrawerHeight: false,
+      bpm: 120,
     };
   }
 
-  changeContent = () => {
-    this.setState({ moreContent: !this.state.moreContent });
+  componentDidUpdate(prevProps: Styles, prevState: any) {
+    console.log('componentDidUpdate', prevState, this.state);
   }
 
-  open = () => {
-    this.setState({ open: !this.state.open });
+  onBottomDrawerOpenStateChanged = (open: boolean, height: number) => {
+    this.setState({
+      bottomDrawerOpen: open,
+      bottomDrawerHeight: height,
+    });
   }
 
-  onOpenStateChanged = (open: boolean, height: number) => {
-    console.log('onOpenStateChanged', open, height);
-    this.setState({ open });
+  onAutoPlayToggled = () => {
+    this.setState({ autoPlay: !this.state.autoPlay });
+  }
+
+  handleAutoPlayToggle = () => {
+    this.setState({ autoPlay: !this.state.autoPlay });
+  }
+
+  onBpmChanged = (bpm: number) => {
+    this.setState({ bpm });
   }
 
   render() {
     const { classes } = this.props;
+    const { autoPlay, bpm, bottomDrawerOpen } = this.state;
 
-    const options = (
-      <div className={classes.options}>
-        <Typography>
-          <Button onClick={this.open}>Toggle open</Button>
-          <br /> {this.state.open ? 'open' : 'not open'}
-          <br /> <Button onClick={this.changeContent}>Toggle extra content</Button>
-          <br /> {this.state.moreContent ? 'This is mooooooooooooo oooooooooooooo oooooooooooooooo oooooooooooo oooooooooooo oooooooooore content' : ''}
-          <br /> This is injected content!
-          <br /> This is injected content!
-          <br /> This is injected content!
-          <br /> This is injected content!
-          <br /> This is injected content!
-          <br /> This is injected content!
-          <br /> This is injected content!
-          <br /> This is injected content!
-          <br /> This is injected content!
-          <br /> This is injected content!
-          <br /> This is injected content!
-          <br /> This is injected content!
-          <br /> This is injected content!
-          <br /> This is injected content!
-          <br /> This is injected content!
-        </Typography>
-      </div>
+    const settings = (
+      <Settings
+        bpm={bpm}
+        autoPlay={autoPlay}
+        onAutoPlayToggled={this.onAutoPlayToggled}
+        onBpmChanged={this.onBpmChanged}
+      />
     );
 
     return (
@@ -99,10 +93,10 @@ class App extends React.Component<Styles, any> {
         <Hidden mdUp>
           <BottomDrawer
             closedHeight={100}
-            open={this.state.open}
-            onOpenStateChanged={this.onOpenStateChanged}
+            open={bottomDrawerOpen}
+            onOpenStateChanged={this.onBottomDrawerOpenStateChanged}
           >
-            {options}
+            {settings}
           </BottomDrawer>
         </Hidden>
         <Hidden smDown>
@@ -113,12 +107,18 @@ class App extends React.Component<Styles, any> {
               paper: classes.drawerPaper,
             }}
           >
-            {options}
+            {settings}
           </Drawer>
         </Hidden>
         <main className={classes.content}>
+          <PlayButton
+            playing={autoPlay}
+            onClick={this.onAutoPlayToggled}>
+            Auto play
+          </PlayButton>
           <Typography>
             You think water moves fast? You should see ice.
+            <br /><br /> {bottomDrawerOpen ? 'Open' : 'Closed'}
           </Typography>
         </main>
       </div>

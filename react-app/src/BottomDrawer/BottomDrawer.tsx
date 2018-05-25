@@ -160,7 +160,7 @@ class BottomDrawer extends React.Component<PropsWithStyles, State> {
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, children } = this.props;
 
     return (
       <div className={classes.root} ref={(containerRef: HTMLDivElement) => { this.containerRef = containerRef; }}>
@@ -171,7 +171,7 @@ class BottomDrawer extends React.Component<PropsWithStyles, State> {
           onSwipedDown={this.swipedDown}
         >
           <div ref={(contentRef: HTMLDivElement) => { this.contentRef = contentRef; }}>
-              {this.props.children}
+              {children}
           </div>
         </Swipeable>
       </div>
