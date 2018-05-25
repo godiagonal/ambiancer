@@ -114,7 +114,7 @@ class App extends React.Component<Styles, any> {
       <div className={classes.root}>
         <Hidden mdUp>
           <BottomDrawer
-            closedHeight={100}
+            closedHeight={150}
             open={bottomDrawerOpen}
             onOpenStateChanged={this.handleBottomDrawerOpenStateChanged}
           >
