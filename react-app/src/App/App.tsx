@@ -3,6 +3,7 @@
 import {
   Drawer,
   Hidden,
+  TextField,
   Typography,
 } from '@material-ui/core';
 import {
@@ -14,7 +15,6 @@ import {
 import * as React from 'react';
 import BottomDrawer from '../BottomDrawer/BottomDrawer';
 import PlayButton from '../PlayButton/PlayButton';
-import Settings from '../Settings/Settings';
 import withRoot from '../withRoot';
 
 const styles: StyleRulesCallback = (theme: Theme) => ({
@@ -35,9 +35,15 @@ const styles: StyleRulesCallback = (theme: Theme) => ({
     backgroundColor: theme.palette.background.default,
     padding: theme.spacing.unit * 3,
   },
+  settings: {
+    padding: theme.spacing.unit * 2,
+  },
+  block: {
+    width: '100%',
+  },
 });
 
-type Styles = WithStyles<'root' | 'drawerPaper' | 'content'>;
+type Styles = WithStyles<'root' | 'drawerPaper' | 'content' | 'settings' | 'block'>;
 
 class App extends React.Component<Styles, any> {
 
@@ -56,22 +62,19 @@ class App extends React.Component<Styles, any> {
     console.log('componentDidUpdate', prevState, this.state);
   }
 
-  onBottomDrawerOpenStateChanged = (open: boolean, height: number) => {
+  handleBottomDrawerOpenStateChanged = (open: boolean, height: number) => {
     this.setState({
       bottomDrawerOpen: open,
       bottomDrawerHeight: height,
     });
   }
 
-  onAutoPlayToggled = () => {
-    this.setState({ autoPlay: !this.state.autoPlay });
-  }
-
   handleAutoPlayToggle = () => {
     this.setState({ autoPlay: !this.state.autoPlay });
   }
 
-  onBpmChanged = (bpm: number) => {
+  handleBpmChange = (e: any) => {
+    const bpm = e.target.value ? parseInt(e.target.value, undefined) : 0;
     this.setState({ bpm });
   }
 
@@ -80,12 +83,31 @@ class App extends React.Component<Styles, any> {
     const { autoPlay, bpm, bottomDrawerOpen } = this.state;
 
     const settings = (
-      <Settings
-        bpm={bpm}
-        autoPlay={autoPlay}
-        onAutoPlayToggled={this.onAutoPlayToggled}
-        onBpmChanged={this.onBpmChanged}
-      />
+      <div className={classes.settings}>
+        <PlayButton
+          className={classes.block}
+          playing={autoPlay}
+          onClick={this.handleAutoPlayToggle}>
+          Auto play
+        </PlayButton>
+        <TextField
+          className={classes.block}
+          id="bpm"
+          label="BPM"
+          value={bpm}
+          onChange={this.handleBpmChange}
+          margin="normal"
+          type="number"
+        />
+        <Typography>
+          You think water moves fast? You should see ice.
+          <br />You think water moves fast? You should see ice.
+          <br />You think water moves fast? You should see ice.
+          <br />You think water moves fast? You should see ice.
+          <br />You think water moves fast? You should see ice.
+          <br />You think water moves fast? You should see ice.
+        </Typography>
+      </div>
     );
 
     return (
@@ -94,7 +116,7 @@ class App extends React.Component<Styles, any> {
           <BottomDrawer
             closedHeight={100}
             open={bottomDrawerOpen}
-            onOpenStateChanged={this.onBottomDrawerOpenStateChanged}
+            onOpenStateChanged={this.handleBottomDrawerOpenStateChanged}
           >
             {settings}
           </BottomDrawer>
@@ -111,11 +133,6 @@ class App extends React.Component<Styles, any> {
           </Drawer>
         </Hidden>
         <main className={classes.content}>
-          <PlayButton
-            playing={autoPlay}
-            onClick={this.onAutoPlayToggled}>
-            Auto play
-          </PlayButton>
           <Typography>
             You think water moves fast? You should see ice.
             <br /><br /> {bottomDrawerOpen ? 'Open' : 'Closed'}

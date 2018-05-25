@@ -1,5 +1,3 @@
-/* tslint:disable:no-console */
-
 import Button, { ButtonProps } from '@material-ui/core/Button';
 import Icon from '@material-ui/core/Icon';
 import {
@@ -11,23 +9,19 @@ import {
 import * as React from 'react';
 
 const styles: StyleRulesCallback = (theme: Theme) => ({
-  root: {
-    width: '100%',
-  },
   icon: {
     marginRight: theme.spacing.unit,
   },
 });
 
-type Props = {
+type Props = ButtonProps & {
   playing?: boolean,
-} & ButtonProps;
+}
 
 type PropsWithStyles = Props & WithStyles<'root' | 'icon'>;
 
 const PlayButton: React.SFC<PropsWithStyles> = ({ classes, playing, children, ...props }: PropsWithStyles) => (
   <Button
-    className={classes.root}
     variant="raised"
     color={playing ? 'primary' : 'default'}
     {...props}
