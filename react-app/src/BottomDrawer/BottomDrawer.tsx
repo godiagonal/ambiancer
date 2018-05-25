@@ -35,7 +35,7 @@ type Props = {
   open?: boolean,
   transitionDuration?: number,
   snapThreshold?: number,
-  onOpenStateChanged?: (open: boolean) => void,
+  onOpenStateChanged?: (open: boolean, height: number) => void,
 }
 
 type PropsWithStyles = Props & WithStyles<'root'> & WithTheme;
@@ -82,7 +82,11 @@ class BottomDrawer extends React.Component<PropsWithStyles, State> {
       window.removeEventListener('resize', this.resize);
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps: PropsWithStyles, prevState: State) {
+    // console.log('componentDidUpdate');
+    // console.log(prevProps.open, this.props.open);
+    // console.log(prevState.open, this.state.open);
+
     // Get the current height of the content element since it might have
     // changed due to prop changes
     this.contentHeight = this.contentRef.clientHeight;
@@ -91,6 +95,10 @@ class BottomDrawer extends React.Component<PropsWithStyles, State> {
       'height',
       { duration: this.props.transitionDuration },
     ));
+
+    if (this.props.onOpenStateChanged && prevState.open !== this.state.open) {
+      this.props.onOpenStateChanged(this.state.open, this.getHeightForState());
+    }
   }
 
   private resize = debounce(() => { 
@@ -111,9 +119,6 @@ class BottomDrawer extends React.Component<PropsWithStyles, State> {
   private swipedUp = (e: any, deltaY: number, isFlick: boolean) => {
     if (!this.state.open) {
       if (isFlick || deltaY > this.contentHeight * this.props.snapThreshold!) {
-        if (this.props.onOpenStateChanged) {
-          this.props.onOpenStateChanged(true);
-        }
         this.setState({ open: true });
       } else {
         this.setState({ open: false });
@@ -124,9 +129,6 @@ class BottomDrawer extends React.Component<PropsWithStyles, State> {
   private swipedDown = (e: any, deltaY: number, isFlick: boolean) => {
     if (this.state.open) {
       if (isFlick || -deltaY > this.contentHeight * this.props.snapThreshold!) {
-        if (this.props.onOpenStateChanged) {
-          this.props.onOpenStateChanged(false);
-        }
         this.setState({ open: false });
       } else {
         this.setState({ open: true });
@@ -135,7 +137,7 @@ class BottomDrawer extends React.Component<PropsWithStyles, State> {
   }
 
   private updateContainerHeight = (offset: number, transition: string = '') => {
-    let height = this.state.open ? this.contentHeight : this.props.closedHeight;
+    let height = this.getHeightForState();
 
     // offset is used to set a height that is somewhere inbetween the min
     // height (closed height) and the max height (content height)
@@ -151,6 +153,10 @@ class BottomDrawer extends React.Component<PropsWithStyles, State> {
     containerStyle.height = `${height}px`;
     containerStyle.webkitTransition = transition;
     containerStyle.transition = transition;
+  }
+
+  private getHeightForState = () => {
+    return this.state.open ? this.contentHeight : this.props.closedHeight;
   }
 
   render() {

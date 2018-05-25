@@ -60,8 +60,8 @@ class App extends React.Component<Styles, any> {
     this.setState({ open: !this.state.open });
   }
 
-  onOpenStateChanged = (open: boolean) => {
-    console.log('onOpenStateChanged');
+  onOpenStateChanged = (open: boolean, height: number) => {
+    console.log('onOpenStateChanged', open, height);
     this.setState({ open });
   }
 
@@ -97,7 +97,11 @@ class App extends React.Component<Styles, any> {
     return (
       <div className={classes.root}>
         <Hidden mdUp>
-          <BottomDrawer closedHeight={100} open={this.state.open} onOpenStateChanged={this.onOpenStateChanged}>
+          <BottomDrawer
+            closedHeight={100}
+            open={this.state.open}
+            onOpenStateChanged={this.onOpenStateChanged}
+          >
             {options}
           </BottomDrawer>
         </Hidden>
