@@ -35,6 +35,7 @@ type Props = {
   open?: boolean,
   transitionDuration?: number,
   snapThreshold?: number,
+  onOpenStateChanged?: (open: boolean) => void,
 }
 
 type PropsWithStyles = Props & WithStyles<'root'> & WithTheme;
@@ -56,6 +57,15 @@ class BottomDrawer extends React.Component<PropsWithStyles, State> {
     this.state = {
       open: props.open!,
     };
+  }
+
+  static getDerivedStateFromProps(nextProps: PropsWithStyles, prevState: State) {
+    if (nextProps.open !== prevState.open) {
+      return {
+        open: nextProps.open
+      };
+    }
+    return null;
   }
 
   componentDidMount() {
@@ -99,18 +109,28 @@ class BottomDrawer extends React.Component<PropsWithStyles, State> {
   }
 
   private swipedUp = (e: any, deltaY: number, isFlick: boolean) => {
-    if (isFlick || deltaY > this.contentHeight * this.props.snapThreshold!) {
-      this.setState({ open: true });
-    } else {
-      this.setState({ open: false });
+    if (!this.state.open) {
+      if (isFlick || deltaY > this.contentHeight * this.props.snapThreshold!) {
+        if (this.props.onOpenStateChanged) {
+          this.props.onOpenStateChanged(true);
+        }
+        this.setState({ open: true });
+      } else {
+        this.setState({ open: false });
+      }
     }
   }
 
   private swipedDown = (e: any, deltaY: number, isFlick: boolean) => {
-    if (isFlick || -deltaY > this.contentHeight * this.props.snapThreshold!) {
-      this.setState({ open: false });
-    } else {
-      this.setState({ open: true });
+    if (this.state.open) {
+      if (isFlick || -deltaY > this.contentHeight * this.props.snapThreshold!) {
+        if (this.props.onOpenStateChanged) {
+          this.props.onOpenStateChanged(false);
+        }
+        this.setState({ open: false });
+      } else {
+        this.setState({ open: true });
+      }
     }
   }
 

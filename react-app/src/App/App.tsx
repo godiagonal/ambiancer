@@ -1,4 +1,7 @@
+/* tslint:disable:no-console */
+
 import {
+  Button,
   Drawer,
   Hidden,
   Typography,
@@ -45,11 +48,21 @@ class App extends React.Component<Styles, any> {
 
     this.state = {
       moreContent: false,
+      open: false,
     };
   }
 
   changeContent = () => {
     this.setState({ moreContent: !this.state.moreContent });
+  }
+
+  open = () => {
+    this.setState({ open: !this.state.open });
+  }
+
+  onOpenStateChanged = (open: boolean) => {
+    console.log('onOpenStateChanged');
+    this.setState({ open });
   }
 
   render() {
@@ -58,8 +71,10 @@ class App extends React.Component<Styles, any> {
     const options = (
       <div className={classes.options}>
         <Typography>
-          <button onClick={this.changeContent}>Show more content</button>
-          <br /> {this.state.moreContent ? 'This is mooooooooooooooooooooooooooo oooooooooooooooooooooooooooo oooooooooooooooooooooore' : ''}
+          <Button onClick={this.open}>Toggle open</Button>
+          <br /> {this.state.open ? 'open' : 'not open'}
+          <br /> <Button onClick={this.changeContent}>Toggle extra content</Button>
+          <br /> {this.state.moreContent ? 'This is mooooooooooooo oooooooooooooo oooooooooooooooo oooooooooooo oooooooooooo oooooooooore content' : ''}
           <br /> This is injected content!
           <br /> This is injected content!
           <br /> This is injected content!
@@ -82,7 +97,7 @@ class App extends React.Component<Styles, any> {
     return (
       <div className={classes.root}>
         <Hidden mdUp>
-          <BottomDrawer closedHeight={100}>
+          <BottomDrawer closedHeight={100} open={this.state.open} onOpenStateChanged={this.onOpenStateChanged}>
             {options}
           </BottomDrawer>
         </Hidden>
