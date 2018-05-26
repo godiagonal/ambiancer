@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-import Synth from './features/synth';
+import { Synth } from './features/synth';
 import registerServiceWorker from './registerServiceWorker';
 import withRootStyles from './withRootStyles';
 
