@@ -1,0 +1,1 @@
+export const SET_BPM = 'synth/SET_BPM';

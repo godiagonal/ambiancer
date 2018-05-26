@@ -1,5 +1,3 @@
-/* tslint:disable:no-console */
-
 import {
   StyleRulesCallback,
   Theme,
@@ -7,6 +5,7 @@ import {
   WithStyles,
   WithTheme,
 } from '@material-ui/core/styles';
+
 import * as React from 'react';
 import * as Swipeable from 'react-swipeable';
 import { debounce } from 'ts-debounce';
@@ -83,10 +82,6 @@ class BottomDrawer extends React.Component<PropsWithStyles, State> {
   }
 
   componentDidUpdate(prevProps: PropsWithStyles, prevState: State) {
-    // console.log('componentDidUpdate');
-    // console.log(prevProps.open, this.props.open);
-    // console.log(prevState.open, this.state.open);
-
     // Get the current height of the content element since it might have
     // changed due to prop changes
     this.contentHeight = this.contentRef.clientHeight;

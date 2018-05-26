@@ -1,5 +1,4 @@
 /* tslint:disable:no-console */
-
 import {
   Drawer,
   Hidden,
@@ -12,10 +11,13 @@ import {
   withStyles,
   WithStyles,
 } from '@material-ui/core/styles';
+
 import * as React from 'react';
-import BottomDrawer from '../BottomDrawer/BottomDrawer';
-import PlayButton from '../PlayButton/PlayButton';
-import withRoot from '../withRoot';
+
+import {
+  BottomDrawer,
+  PlayButton
+} from '../../../components';
 
 const styles: StyleRulesCallback = (theme: Theme) => ({
   root: {
@@ -43,11 +45,11 @@ const styles: StyleRulesCallback = (theme: Theme) => ({
   },
 });
 
-type Styles = WithStyles<'root' | 'drawerPaper' | 'content' | 'settings' | 'block'>;
+type PropsWithStyles = WithStyles<'root' | 'drawerPaper' | 'content' | 'settings' | 'block'>;
 
-class App extends React.Component<Styles, any> {
+class Synth extends React.Component<PropsWithStyles, any> {
 
-  constructor(props: WithStyles<'root'>) {
+  constructor(props: PropsWithStyles) {
     super(props);
 
     this.state = {
@@ -58,7 +60,7 @@ class App extends React.Component<Styles, any> {
     };
   }
 
-  componentDidUpdate(prevProps: Styles, prevState: any) {
+  componentDidUpdate(prevProps: PropsWithStyles, prevState: any) {
     console.log('componentDidUpdate', prevState, this.state);
   }
 
@@ -143,4 +145,4 @@ class App extends React.Component<Styles, any> {
   }
 }
 
-export default withRoot(withStyles(styles)<{}>(App));
+export default withStyles(styles)<{}>(Synth);
