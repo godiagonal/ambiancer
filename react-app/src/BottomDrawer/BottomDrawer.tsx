@@ -29,7 +29,7 @@ type State = {
   open: boolean,
 }
 
-type Props = {
+type BottomDrawerProps = {
   children: any,
   closedHeight: number,
   open?: boolean,
@@ -38,10 +38,10 @@ type Props = {
   onOpenStateChanged?: (open: boolean, height: number) => void,
 }
 
-type PropsWithStyles = Props & WithStyles<'root'> & WithTheme;
+type PropsWithStyles = BottomDrawerProps & WithStyles<'root'> & WithTheme;
 
 class BottomDrawer extends React.Component<PropsWithStyles, State> {
-  static defaultProps: Partial<Props> = {
+  static defaultProps: Partial<BottomDrawerProps> = {
     open: false,
     transitionDuration: 400,
     snapThreshold: 0.2,
@@ -179,4 +179,4 @@ class BottomDrawer extends React.Component<PropsWithStyles, State> {
   }
 }
 
-export default withStyles(styles, { withTheme: true })<Props>(BottomDrawer);
+export default withStyles(styles, { withTheme: true })<BottomDrawerProps>(BottomDrawer);

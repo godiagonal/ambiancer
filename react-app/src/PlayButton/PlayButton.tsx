@@ -14,11 +14,11 @@ const styles: StyleRulesCallback = (theme: Theme) => ({
   },
 });
 
-type Props = ButtonProps & {
+type PlayButtonProps = ButtonProps & {
   playing?: boolean,
 }
 
-type PropsWithStyles = Props & WithStyles<'root' | 'icon'>;
+type PropsWithStyles = PlayButtonProps & WithStyles<'root' | 'icon'>;
 
 const PlayButton: React.SFC<PropsWithStyles> = ({ classes, playing, children, ...props }: PropsWithStyles) => (
   <Button
@@ -31,4 +31,4 @@ const PlayButton: React.SFC<PropsWithStyles> = ({ classes, playing, children, ..
   </Button>
 );
 
-export default withStyles(styles)<Props>(PlayButton);
+export default withStyles(styles)<PlayButtonProps>(PlayButton);
