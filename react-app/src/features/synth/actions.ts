@@ -1,6 +1,9 @@
-import * as actionTypes from './actionTypes';
+import { createStandardAction } from 'typesafe-actions';
 
-export const setBpm = (bpm: number) => ({
-  type: actionTypes.SET_BPM,
-  payload: { bpm }
-});
+import {
+  TOGGLE_AUTOPLAY,
+  UPDATE_BPM,
+} from './actionTypes';
+
+export const updateBpm = createStandardAction(UPDATE_BPM)<number>();
+export const toggleAutoPlay = createStandardAction(TOGGLE_AUTOPLAY)();

@@ -4,11 +4,14 @@ import * as ReactDOM from 'react-dom';
 import { Synth } from './features/synth';
 import registerServiceWorker from './registerServiceWorker';
 import withRootStyles from './withRootStyles';
+import withStore from './withStore';
 
-// TODO: add HOC for Provider store, withStore
-const Root = withRootStyles(() => (
-  <Synth />
-));
+const Root =
+  withStore(
+    withRootStyles(
+      () => (<Synth />)
+    )
+  );
 
 ReactDOM.render(<Root />, document.getElementById('root') as HTMLElement);
 
