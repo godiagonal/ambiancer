@@ -9,7 +9,7 @@ import withStore from './withStore';
 const Root =
   withStore(
     withRootStyles(
-      () => (<Synth />)
+      Synth
     )
   );
 
