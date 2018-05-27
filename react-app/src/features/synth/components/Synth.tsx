@@ -2,7 +2,6 @@
 import {
   Drawer,
   Hidden,
-  TextField,
   Typography,
 } from '@material-ui/core';
 import {
@@ -13,11 +12,13 @@ import {
 } from '@material-ui/core/styles';
 
 import * as React from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators, Dispatch } from 'redux';
 
-import {
-  BottomDrawer,
-  PlayButton
-} from '../../../components';
+import { synthSelectors } from '../';
+import { BottomDrawer } from '../../../components';
+import { RootState } from '../../../store';
+import AudioSettings from './AudioSettings';
 
 const styles: StyleRulesCallback = (theme: Theme) => ({
   root: {
@@ -37,31 +38,32 @@ const styles: StyleRulesCallback = (theme: Theme) => ({
     backgroundColor: theme.palette.background.default,
     padding: theme.spacing.unit * 3,
   },
-  settings: {
-    padding: theme.spacing.unit * 2,
-  },
   block: {
     width: '100%',
   },
 });
 
-type PropsWithStyles = WithStyles<'root' | 'drawerPaper' | 'content' | 'settings' | 'block'>;
+type SynthProps = {
+  autoPlay: boolean,
+  bottomDrawerOpen: false,
+  bottomDrawerHeight: number,
+}
 
-class Synth extends React.Component<PropsWithStyles, any> {
+type PropsWithStyles = SynthProps & WithStyles<'root' | 'drawerPaper' | 'content' | 'block'>;
 
+// TODO: make into SFC by moving bottomDrawer logic to redux flow
+export class Synth extends React.Component<PropsWithStyles, any> {
   constructor(props: PropsWithStyles) {
     super(props);
 
     this.state = {
-      autoPlay: false,
       bottomDrawerOpen: false,
-      bottomDrawerHeight: false,
-      bpm: 120,
+      bottomDrawerHeight: 0,
     };
   }
 
   componentDidUpdate(prevProps: PropsWithStyles, prevState: any) {
-    console.log('componentDidUpdate', prevState, this.state);
+    console.log('componentDidUpdate', prevProps, this.props);
   }
 
   handleBottomDrawerOpenStateChanged = (open: boolean, height: number) => {
@@ -71,46 +73,9 @@ class Synth extends React.Component<PropsWithStyles, any> {
     });
   }
 
-  handleAutoPlayToggle = () => {
-    this.setState({ autoPlay: !this.state.autoPlay });
-  }
-
-  handleBpmChange = (e: any) => {
-    const bpm = e.target.value ? parseInt(e.target.value, undefined) : 0;
-    this.setState({ bpm });
-  }
-
   render() {
     const { classes } = this.props;
-    const { autoPlay, bpm, bottomDrawerOpen } = this.state;
-
-    const settings = (
-      <div className={classes.settings}>
-        <PlayButton
-          className={classes.block}
-          playing={autoPlay}
-          onClick={this.handleAutoPlayToggle}>
-          Auto play
-        </PlayButton>
-        <TextField
-          className={classes.block}
-          id="bpm"
-          label="BPM"
-          value={bpm}
-          onChange={this.handleBpmChange}
-          margin="normal"
-          type="number"
-        />
-        <Typography>
-          You think water moves fast? You should see ice.
-          <br />You think water moves fast? You should see ice.
-          <br />You think water moves fast? You should see ice.
-          <br />You think water moves fast? You should see ice.
-          <br />You think water moves fast? You should see ice.
-          <br />You think water moves fast? You should see ice.
-        </Typography>
-      </div>
-    );
+    const { bottomDrawerOpen } = this.state;
 
     return (
       <div className={classes.root}>
@@ -120,7 +85,7 @@ class Synth extends React.Component<PropsWithStyles, any> {
             open={bottomDrawerOpen}
             onOpenStateChanged={this.handleBottomDrawerOpenStateChanged}
           >
-            {settings}
+            <AudioSettings />
           </BottomDrawer>
         </Hidden>
         <Hidden smDown>
@@ -131,7 +96,7 @@ class Synth extends React.Component<PropsWithStyles, any> {
               paper: classes.drawerPaper,
             }}
           >
-            {settings}
+            <AudioSettings />
           </Drawer>
         </Hidden>
         <main className={classes.content}>
@@ -145,4 +110,12 @@ class Synth extends React.Component<PropsWithStyles, any> {
   }
 }
 
-export default withStyles(styles)<{}>(Synth);
+const mapStateToProps = (state: RootState) => ({
+  autoPlay: synthSelectors.getAutoPlay(state.synth),
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => bindActionCreators({
+  
+}, dispatch);
+
+export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(Synth));
