@@ -21,11 +21,11 @@ type PlayButtonProps = ButtonProps & {
 
 type PropsWithStyles = PlayButtonProps & WithStyles<'root' | 'icon'>;
 
-const PlayButton: React.SFC<PropsWithStyles> = ({ classes, playing, children, ...props }: PropsWithStyles) => (
+const PlayButton: React.SFC<PropsWithStyles> = ({ classes, playing, children, ...rest }: PropsWithStyles) => (
   <Button
     variant="raised"
     color={playing ? 'primary' : 'default'}
-    {...props}
+    {...rest}
   >
     <Icon className={classes.icon}>{playing ? 'pause' : 'play_arrow'}</Icon>
     {children}

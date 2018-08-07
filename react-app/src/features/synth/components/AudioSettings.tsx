@@ -1,5 +1,4 @@
 import {
-  TextField,
   Typography,
 } from '@material-ui/core';
 import {
@@ -13,7 +12,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
-import { PlayButton } from '../../../components';
+import { CustomSlider, PlayButton } from '../../../components';
 import { RootState } from '../../../store';
 
 import { synthActions, synthSelectors } from '../';
@@ -45,8 +44,8 @@ export const AudioSettings: React.SFC<PropsWithStyles> = (props: PropsWithStyles
     updateBpm,
   } = props;
 
-  const handleUpdateBpm: React.ReactEventHandler<HTMLInputElement> = e => {
-    updateBpm(e.currentTarget.value ? parseInt(e.currentTarget.value, undefined) : 0)
+  const handleBpmChange = (e: any, newValue: number) => {
+    updateBpm(newValue ? newValue : 0);
   };
 
   return (
@@ -57,14 +56,13 @@ export const AudioSettings: React.SFC<PropsWithStyles> = (props: PropsWithStyles
         onClick={toggleAutoPlay}>
         Auto play
       </PlayButton>
-      <TextField
-        className={classes.block}
-        id="bpm"
+      <CustomSlider
         label="BPM"
         value={bpm}
-        onChange={handleUpdateBpm}
-        margin="normal"
-        type="number"
+        onChange={handleBpmChange}
+        step={1}
+        min={60}
+        max={300}
       />
       <Typography>
         You think water moves fast? You should see ice.
