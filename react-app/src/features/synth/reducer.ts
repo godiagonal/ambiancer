@@ -56,4 +56,22 @@ export default combineReducers<SynthState, SynthAction>({
         return state;
     }
   },
+  octaveMin: (state = 3, action) => {
+    switch (action.type) {
+      case getType(synthActions.updateOctaveMin):
+        return action.payload;
+
+      default:
+        return state;
+    }
+  },
+  octaveMax: (state = 6, action) => {
+    switch (action.type) {
+      case getType(synthActions.updateOctaveMax):
+        return action.payload;
+
+      default:
+        return state;
+    }
+  },
 });

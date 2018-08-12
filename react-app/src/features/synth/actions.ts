@@ -6,3 +6,5 @@ export const toggleAutoPlay = createStandardAction('synth/TOGGLE_AUTOPLAY')<bool
 export const updateBpm = createStandardAction('synth/UPDATE_BPM')<number>();
 export const updateAmbience = createStandardAction('synth/UPDATE_AMBIENCE')<number>();
 export const selectNotes = createStandardAction('synth/SELECT_NOTES')<Note[]>();
+export const updateOctaveMin = createStandardAction('synth/UPDATE_OCTAVEMIN')<number>();
+export const updateOctaveMax = createStandardAction('synth/UPDATE_OCTAVEMAX')<number>();

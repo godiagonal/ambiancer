@@ -6,4 +6,6 @@ export type SynthState = Readonly<{
   ambience: number;
   bpm: number;
   notes: Note[];
+  octaveMin: number;
+  octaveMax: number;
 }>;
