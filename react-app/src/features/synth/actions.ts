@@ -1,9 +1,7 @@
 import { createStandardAction } from 'typesafe-actions';
+import { Note } from './models';
 
-import {
-  TOGGLE_AUTOPLAY,
-  UPDATE_BPM,
-} from './actionTypes';
-
-export const updateBpm = createStandardAction(UPDATE_BPM)<number>();
-export const toggleAutoPlay = createStandardAction(TOGGLE_AUTOPLAY)();
+export const updateBpm = createStandardAction('synth/UPDATE_BPM')<number>();
+export const updateAmbience = createStandardAction('synth/UPDATE_AMBIENCE')<number>();
+export const toggleAutoPlay = createStandardAction('synth/TOGGLE_AUTOPLAY')();
+export const selectNotes = createStandardAction('synth/SELECT_NOTES')<Note[]>();

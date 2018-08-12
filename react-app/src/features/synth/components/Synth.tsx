@@ -13,7 +13,6 @@ import {
 
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators, Dispatch } from 'redux';
 
 import { synthSelectors } from '../';
 import { BottomDrawer } from '../../../components';
@@ -51,7 +50,12 @@ type SynthProps = {
 
 type PropsWithStyles = SynthProps & WithStyles<'root' | 'drawerPaper' | 'content' | 'block'>;
 
+const mapStateToProps = (state: RootState) => ({
+  autoPlay: synthSelectors.getAutoPlay(state.synth),
+});
+
 // TODO: make into SFC by moving bottomDrawer logic to redux flow
+
 export class Synth extends React.Component<PropsWithStyles, any> {
   constructor(props: PropsWithStyles) {
     super(props);
@@ -60,10 +64,6 @@ export class Synth extends React.Component<PropsWithStyles, any> {
       bottomDrawerOpen: false,
       bottomDrawerHeight: 0,
     };
-  }
-
-  componentDidUpdate(prevProps: PropsWithStyles, prevState: any) {
-    console.log('componentDidUpdate', prevProps, this.props);
   }
 
   handleBottomDrawerOpenStateChanged = (open: boolean, height: number) => {
@@ -79,7 +79,7 @@ export class Synth extends React.Component<PropsWithStyles, any> {
 
     return (
       <div className={classes.root}>
-        <Hidden mdUp>
+        <Hidden smUp>
           <BottomDrawer
             closedHeight={150}
             open={bottomDrawerOpen}
@@ -88,7 +88,7 @@ export class Synth extends React.Component<PropsWithStyles, any> {
             <AudioSettings />
           </BottomDrawer>
         </Hidden>
-        <Hidden smDown>
+        <Hidden xsDown>
           <Drawer
             variant="permanent"
             open
@@ -110,12 +110,4 @@ export class Synth extends React.Component<PropsWithStyles, any> {
   }
 }
 
-const mapStateToProps = (state: RootState) => ({
-  autoPlay: synthSelectors.getAutoPlay(state.synth),
-});
-
-const mapDispatchToProps = (dispatch: Dispatch) => bindActionCreators({
-  
-}, dispatch);
-
-export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(Synth));
+export default withStyles(styles)(connect(mapStateToProps)(Synth));
