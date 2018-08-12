@@ -24,7 +24,7 @@ const styles: StyleRulesCallback = (theme: Theme) => ({
     flex: '1 1 auto',
   },
   textInput: {
-    color: theme.palette.primary.main,
+    color: theme.palette.common.black,
     paddingBottom: 6,
   },
 });
