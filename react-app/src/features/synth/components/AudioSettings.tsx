@@ -20,7 +20,7 @@ import { bindActionCreators, Dispatch } from 'redux';
 
 import { CustomSlider, PlayButton } from '../../../components';
 import { RootState } from '../../../store';
-import { Note, synthActions, synthSelectors } from '../';
+import { Note, synthActions, synthSelectors } from '..';
 
 const styles: StyleRulesCallback = (theme: Theme) => ({
   root: {

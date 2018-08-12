@@ -7,6 +7,15 @@ import { SynthState } from './models';
 export type SynthAction = ActionType<typeof synthActions>;
 
 export default combineReducers<SynthState, SynthAction>({
+  audioSettingsOpen: (state = false, action) => {
+    switch (action.type) {
+      case getType(synthActions.toggleAudioSettings):
+        return action.payload;
+
+      default:
+        return state;
+    }
+  },
   autoPlay: (state = false, action) => {
     switch (action.type) {
       case getType(synthActions.toggleAutoPlay):
