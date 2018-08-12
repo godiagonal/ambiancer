@@ -1,7 +1,5 @@
 import {
-  Grid,
-  TextField
-  // Typography,
+  TextField,
 } from '@material-ui/core';
 import {
   StyleRulesCallback,
@@ -14,9 +12,20 @@ import Slider, { SliderProps } from '@material-ui/lab/Slider';
 import * as React from 'react';
 
 const styles: StyleRulesCallback = (theme: Theme) => ({
+  root: {
+    display: 'flex',
+    alignItems: 'flex-end',
+  },
+  textContainer: {
+    flex: '0 0 30px',
+    minWidth: 0,
+  },
+  sliderContainer: {
+    flex: '1 1 auto',
+  },
   textInput: {
-    // backgroundColor: theme.palette.common.white,
-    // border: '1px solid #ced4da',
+    color: theme.palette.primary.main,
+    paddingBottom: 6,
   },
 });
 
@@ -24,16 +33,17 @@ type CustomSliderProps = SliderProps & {
   label?: string;
 }
 
-type PropsWithStyles = CustomSliderProps & WithStyles<'textInput'>;
+type PropsWithStyles = CustomSliderProps & WithStyles<'root' | 'textContainer' | 'sliderContainer' | 'textInput'>;
 
-// TODO: use flexbox instead of grid
-// TODO: make text input fixed width (prop?) and the slider take up the rest
-// TODO: style text input properly
+const CustomSlider: React.SFC<PropsWithStyles> = ({ classes, className, label, value, ...rest }: PropsWithStyles) => {
+  const onTouchMove = (e: any) => e.stopPropagation();
+  const rootClasses = [classes.root, className].join(' ');
 
-const CustomSlider: React.SFC<PropsWithStyles> = ({ classes, label, value, ...rest }: PropsWithStyles) => {
+  value = value === undefined ? 0 : value;
+
   return (
-    <Grid container alignItems="flex-end">
-      <Grid item xs={2}>
+    <div className={rootClasses}>
+      <div className={classes.textContainer}>
         <TextField
           label={label}
           value={value}
@@ -46,14 +56,15 @@ const CustomSlider: React.SFC<PropsWithStyles> = ({ classes, label, value, ...re
             },
           }}
         />
-      </Grid>
-      <Grid item xs={10}>
+      </div>
+      <div className={classes.sliderContainer}>
         <Slider
           value={value}
+          onTouchMove={onTouchMove}
           {...rest}
         />
-      </Grid>
-    </Grid>
+      </div>
+    </div>
   );
 };
 
