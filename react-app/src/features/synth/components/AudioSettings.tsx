@@ -74,9 +74,13 @@ export const AudioSettings: React.SFC<PropsWithStyles> = (props: PropsWithStyles
     selectNotes,
   } = props;
 
+  const notesErrorText = 'Select notes';
+
   const handleBpmChange = (e: any, value: number) => updateBpm(value ? value : 0);
   const handleAmbienceChange = (e: any, value: number) => updateAmbience(value ? value : 0);
-  const handleNotesChange = (e: any) => selectNotes(e.target.value);
+  const handleNotesChange = (e: any) => {
+    selectNotes(e.target.value.filter((value: string) => value !== notesErrorText));
+  };
 
   const allNotes: Note[] = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#'];
   const renderNotesValue = (selected: Note[]) => selected.join(', ');
@@ -115,7 +119,8 @@ export const AudioSettings: React.SFC<PropsWithStyles> = (props: PropsWithStyles
         <Select
           multiple
           fullWidth
-          value={notes}
+          error={notes.length === 0}
+          value={notes.length > 0 ? notes : [notesErrorText]}
           input={<Input id="notes" />}
           onChange={handleNotesChange}
           renderValue={renderNotesValue}
