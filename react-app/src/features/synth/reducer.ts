@@ -46,7 +46,11 @@ export default combineReducers<SynthState, SynthAction>({
   notes: (state = ['A', 'D', 'E', 'F#', 'G'], action) => {
     switch (action.type) {
       case getType(synthActions.selectNotes):
-        return action.payload;
+        return action.payload.sort((a, b) => {
+            if(a < b) { return -1; }
+            if(a > b) { return 1; }
+            return 0;
+        });
 
       default:
         return state;
