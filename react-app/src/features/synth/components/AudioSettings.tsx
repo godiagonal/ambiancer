@@ -39,7 +39,7 @@ type AudioSettingsProps = {
   ambience: number,
   bpm: number,
   notes: Note[],
-  toggleAutoPlay: () => any,
+  toggleAutoPlay: (playing: boolean) => any,
   updateAmbience: (ambience: number) => any,
   updateBpm: (bpm: number) => any,
   selectNotes: (notes: Note[]) => any,
@@ -91,7 +91,8 @@ export const AudioSettings: React.SFC<PropsWithStyles> = (props: PropsWithStyles
         className={classes.button}
         fullWidth
         playing={autoPlay}
-        onClick={toggleAutoPlay}>
+        onValueChange={toggleAutoPlay}
+      >
         Auto play
       </PlayButton>
       <FormControl className={classes.formControl} fullWidth>

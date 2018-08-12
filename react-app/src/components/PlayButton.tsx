@@ -17,19 +17,25 @@ const styles: StyleRulesCallback = (theme: Theme) => ({
 
 type PlayButtonProps = ButtonProps & {
   playing?: boolean,
-}
+  onValueChange?: (playing: boolean) => any,
+};
 
 type PropsWithStyles = PlayButtonProps & WithStyles<'root' | 'icon'>;
 
-const PlayButton: React.SFC<PropsWithStyles> = ({ classes, playing, children, ...rest }: PropsWithStyles) => (
-  <Button
-    variant="raised"
-    color={playing ? 'primary' : 'default'}
-    {...rest}
-  >
-    <Icon className={classes.icon}>{playing ? 'pause' : 'play_arrow'}</Icon>
-    {children}
-  </Button>
-);
+const PlayButton: React.SFC<PropsWithStyles> = ({ classes, playing, onValueChange, children, ...rest }: PropsWithStyles) => {
+  const handleOnClick = () => onValueChange && onValueChange(!playing);
+
+  return (
+    <Button
+      variant="raised"
+      color={playing ? 'primary' : 'default'}
+      onClick={handleOnClick}
+      {...rest}
+    >
+      <Icon className={classes.icon}>{playing ? 'pause' : 'play_arrow'}</Icon>
+      {children}
+    </Button>
+  );
+};
 
 export default withStyles(styles)<PlayButtonProps>(PlayButton);

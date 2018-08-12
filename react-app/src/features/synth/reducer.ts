@@ -19,7 +19,7 @@ export default combineReducers<SynthState, SynthAction>({
   autoPlay: (state = false, action) => {
     switch (action.type) {
       case getType(synthActions.toggleAutoPlay):
-        return !state;
+        return action.payload;
 
       default:
         return state;
