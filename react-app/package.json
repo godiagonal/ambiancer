@@ -33,6 +33,7 @@
     "react-redux": "^5.0.7",
     "react-swipeable": "^4.2.1",
     "redux": "^4.0.0",
+    "redux-logger": "^3.0.6",
     "reselect": "^3.0.1",
     "resolve": "1.6.0",
     "sass-loader": "^7.0.1",
@@ -66,6 +67,7 @@
     "@types/react-dom": "^16.0.5",
     "@types/react-redux": "^6.0.0",
     "@types/react-swipeable": "^4.2.1",
+    "@types/redux-logger": "^3.0.6",
     "typescript": "^2.8.3",
     "typings-for-css-modules-loader": "^1.7.0"
   },
