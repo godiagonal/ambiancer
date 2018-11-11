@@ -32,14 +32,6 @@ export default function() {
     lowpassFilter,
     panner,
   ]);
-  // synth.audioBus.setFxChain([
-  //   // distortion,
-  //   // delay,
-  //   // reverb,
-  //   // reverb2,
-  //   // lowpassFilter,
-  //   // panner,
-  // ]);
 
   const setAmbienceLevel = (level: number) => {
     const lowThreshold = 0.25;
