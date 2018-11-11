@@ -87,8 +87,7 @@ export const Synth: React.SFC<PropsWithStyles> = (props: PropsWithStyles) => {
       </Hidden>
       <main className={classes.content}>
         <Typography>
-          You think water moves fast? You should see ice.
-          <br /><br /> {audioSettingsOpen ? 'Open' : 'Closed'}
+          {audioSettingsOpen ? 'Open' : 'Closed'}
         </Typography>
       </main>
     </div>

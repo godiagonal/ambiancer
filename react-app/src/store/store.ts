@@ -3,6 +3,7 @@ import logger from 'redux-logger';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 
+import synth from './synthMiddleware';
 import rootReducer from './rootReducer';
 
 const persistConfig = {
@@ -13,7 +14,9 @@ const persistConfig = {
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 function configureStore(initialState = {}) {
-  const middleware = [];
+  const middleware = [
+    synth(),
+  ];
 
   if (process.env.NODE_ENV !== 'production') {
     middleware.push(logger);
