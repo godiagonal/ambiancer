@@ -9,6 +9,7 @@ import {
   Delay,
   Distortion,
   LowpassFilter,
+  NoteGenerator,
   Panner,
   Reverb,
   Synthesizer,
@@ -33,6 +34,11 @@ export default function() {
     lowpassFilter,
     panner,
   ]);
+
+  const noteGenerator = new NoteGenerator(["A", "C", "D"], {start: 2, end: 5});
+  synth.setAutoPlayNoteGenerator(noteGenerator);
+  synth.setAutoPlayBpm(60);
+  // synth.toggleAutoPlay();
 
   const synthMiddleware: Middleware = ({ getState }: MiddlewareAPI) => (
     next: Dispatch

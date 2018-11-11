@@ -1,3 +1,3 @@
-const AudioCtx = (window as any).AudioContext || (window as any).webkitAudioContext;
+const audioCtx = (window as any).AudioContext || (window as any).webkitAudioContext;
 
-export const createAudioContext = () => new AudioCtx() as AudioContext;
+export const createAudioContext = () => new audioCtx() as AudioContext;

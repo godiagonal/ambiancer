@@ -1,7 +1,7 @@
 export class Effect<T extends AudioNode> {
-  public name: string;
-  public node: T;
-  public enabled: boolean;
+  name: string;
+  node: T;
+  enabled: boolean;
 
   constructor(name: string, node: T, enabled: boolean = true) {
     this.name = name;

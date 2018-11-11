@@ -17,15 +17,15 @@ export class Oscillator {
     this._oscillator.start(0);
   }
   
-  public setType(type: OscillatorType) {
+  setType(type: OscillatorType) {
     this._oscillator.type = type;
   }
   
-  public start() {
+  start() {
     this._volume.value = 1;
   }
   
-  public stop() {
+  stop() {
     this._volume.value = 0;
   }
 }

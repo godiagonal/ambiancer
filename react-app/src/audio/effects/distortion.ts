@@ -15,15 +15,14 @@ export class Distortion extends Effect<WaveShaperNode> {
   }
   
   static makeDistortionCurve(amount: number) {
-    let k = amount,
-      n_samples = 44100,
-      curve = new Float32Array(n_samples),
-      deg = Math.PI / 180,
-      i = 0,
-      x = 0;
-    for (; i < n_samples; ++i) {
-      x = i * 2 / n_samples - 1;
-      curve[i] = ( 3 + k ) * x * 20 * deg / ( Math.PI + k * Math.abs(x) );
+    const nSamples = 44100;
+    const curve = new Float32Array(nSamples);
+    const deg = Math.PI / 180;
+    let i = 0;
+    let x = 0;
+    for (; i < nSamples; ++i) {
+      x = i * 2 / nSamples - 1;
+      curve[i] = ( 3 + amount ) * x * 20 * deg / ( Math.PI + amount * Math.abs(x) );
     }
     return curve;
   }

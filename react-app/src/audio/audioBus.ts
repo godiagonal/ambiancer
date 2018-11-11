@@ -1,10 +1,10 @@
-import {Effect} from './effects';
+import { Effect } from './effects';
 
 export class AudioBus {
   private _input: AudioNode;
   private _output: AudioNode;
-  private _fxChain: Effect<AudioNode>[];
-  private _handleFxChainChanged: (fxChain: Effect<AudioNode>[]) => void;
+  private _fxChain: Array<Effect<AudioNode>>;
+  private _handleFxChainChanged: (fxChain: Array<Effect<AudioNode>>) => void;
 
   constructor(context: AudioContext, input: AudioNode = context.createGain(), output: AudioNode = context.createGain()) {
     this._input = input;
@@ -13,23 +13,23 @@ export class AudioBus {
     this.setFxChain([]);
   }
 
-  public get input() {
+  get input() {
     return this._input;
   }
 
-  public get output() {
+  get output() {
     return this._output;
   }
   
-  public connect(target: AudioNode) {
+  connect(target: AudioNode) {
     this._output.connect(target);
   }
   
-  public findFx(name: string) {
+  findFx(name: string) {
     return this._fxChain.find(fx => fx.name === name);
   }
   
-  public setFxChain(fxChain: Effect<AudioNode>[]) {
+  setFxChain(fxChain: Array<Effect<AudioNode>>) {
     this._fxChain = fxChain;
     this._connectFxChain();
   
@@ -38,7 +38,7 @@ export class AudioBus {
     }
   }
   
-  public toggleFx(name: string) {
+  toggleFx(name: string) {
     const foundFx = this.findFx(name);
     if (foundFx) {
       foundFx.enabled = !foundFx.enabled;
@@ -50,7 +50,7 @@ export class AudioBus {
     }
   }
   
-  public onFxChainChanged(callback: (fxChain: Effect<AudioNode>[]) => void) {
+  onFxChainChanged(callback: (fxChain: Array<Effect<AudioNode>>) => void) {
     this._handleFxChainChanged = callback;
     callback(this._fxChain);
   }

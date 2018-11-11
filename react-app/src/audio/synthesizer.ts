@@ -40,11 +40,11 @@ export class Synthesizer {
     this._lastFrequency = null;
   }
 
-  public get audioBus() {
+  get audioBus() {
     return this._audioBus;
   }
   
-  public toggleAutoPlay() {
+  toggleAutoPlay() {
     if (this._autoPlayTimeout) {
       this.stopAutoPlay();
     } else {
@@ -56,7 +56,7 @@ export class Synthesizer {
     }
   }
 
-  public stopAutoPlay() {
+  stopAutoPlay() {
     if (this._autoPlayTimeout) {
       clearInterval(this._autoPlayTimeout);
       this._autoPlayTimeout = null;
@@ -64,10 +64,9 @@ export class Synthesizer {
     this.releaseAll();
   }
 
-  public startAutoPlay() {
+  startAutoPlay() {
     if (!this._autoPlayNoteGenerator) {
-      console.error('Missing note generator.');
-      return;
+      throw Error('Missing note generator.');
     }
 
     const interval = 60000 / this._autoPlayBpm; // 60,000ms (60s) / bpm
@@ -77,11 +76,11 @@ export class Synthesizer {
     }, interval);
   }
 
-  public setAutoPlayNoteGenerator(noteGenerator: NoteGenerator) {
+  setAutoPlayNoteGenerator(noteGenerator: NoteGenerator) {
     this._autoPlayNoteGenerator = noteGenerator;
   }
   
-  public setAutoPlayBpm(bpm: number) {
+  setAutoPlayBpm(bpm: number) {
     this._autoPlayBpm = bpm;
     if (this._autoPlayTimeout) {
       this.stopAutoPlay();
@@ -89,7 +88,7 @@ export class Synthesizer {
     }
   }
   
-  public setOctave(direction: 'up' | 'down') {
+  setOctave(direction: 'up' | 'down') {
     if (direction === 'up' && this._baseOctave < 6) {
       this._baseOctave += 1;
     } else if (direction === 'down' && this._baseOctave > 1) {
@@ -101,7 +100,7 @@ export class Synthesizer {
     }
   }
   
-  public setWaveShape(shape: OscillatorType) {
+  setWaveShape(shape: OscillatorType) {
     this._waveShape = shape;
     
     if (this._handleWaveShapeChanged) {
@@ -109,7 +108,7 @@ export class Synthesizer {
     }
   }
   
-  public playNote(note: Note) {
+  playNote(note: Note) {
     if (!this._polyphonic && this._lastNote) {
       this.releaseNote(this._lastNote);
     }
@@ -124,7 +123,7 @@ export class Synthesizer {
     }
   }
   
-  public releaseNote(note: Note) {
+  releaseNote(note: Note) {
     const octave = this._baseOctave + note.octave;
     this._oscillatorForNoteString(`${note.note}${octave}`).stop();
     
@@ -133,7 +132,7 @@ export class Synthesizer {
     }
   }
   
-  public playFrequency(freq: number) {
+  playFrequency(freq: number) {
     if (!this._polyphonic && this._lastFrequency) {
       this.releaseFrequency(this._lastFrequency);
     }
@@ -147,7 +146,7 @@ export class Synthesizer {
     }
   }
   
-  public releaseFrequency(freq: number) {
+  releaseFrequency(freq: number) {
     this._oscillatorForFrequency(freq).stop();
     
     if (this._handleReleaseFrequency) {
@@ -155,39 +154,39 @@ export class Synthesizer {
     }
   }
   
-  public releaseAll() {
+  releaseAll() {
     Object.keys(this._oscillators).forEach((freq) => {
       this._oscillators[freq].stop();
     });
   }
   
-  public onPlayNote(callback: (note: Note) => void) {
+  onPlayNote(callback: (note: Note) => void) {
     this._handlePlayNote = callback;
   }
   
-  public onReleaseNote(callback: (note: Note) => void) {
+  onReleaseNote(callback: (note: Note) => void) {
     this._handleReleaseNote = callback;
   }
   
-  public onPlayFrequency(callback: (freq: number) => void) {
+  onPlayFrequency(callback: (freq: number) => void) {
     this._handlePlayFrequency = callback;
   }
   
-  public onReleaseFrequency(callback: (freq: number) => void) {
+  onReleaseFrequency(callback: (freq: number) => void) {
     this._handleReleaseFrequency = callback;
   }
   
-  public onToggleAutoPlay(callback: (on: boolean) => void) {
+  onToggleAutoPlay(callback: (on: boolean) => void) {
     this._handleToggleAutoPlay = callback;
     callback(Boolean(this._autoPlayTimeout));
   }
   
-  public onWaveShapeChanged(callback: (shape: OscillatorType) => void) {
+  onWaveShapeChanged(callback: (shape: OscillatorType) => void) {
     this._handleWaveShapeChanged = callback;
     callback(this._waveShape);
   }
   
-  public onOctaveChanged(callback: (octave: number) => void) {
+  onOctaveChanged(callback: (octave: number) => void) {
     this._handleOctaveChanged = callback;
     callback(this._baseOctave);
   }
