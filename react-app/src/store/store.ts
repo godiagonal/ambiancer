@@ -3,8 +3,8 @@ import logger from 'redux-logger';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 
-import synth from './synthMiddleware';
 import rootReducer from './rootReducer';
+import synth from './synthMiddleware';
 
 const persistConfig = {
   key: 'root',

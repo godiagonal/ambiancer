@@ -19,9 +19,11 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
+import { NoteString } from 'src/audio';
+
 import { CustomSlider, PlayButton } from '../../../components';
 import { RootState } from '../../../store';
-import { Note, synthActions, synthSelectors } from '..';
+import { synthActions, synthSelectors } from '..';
 
 const styles: StyleRulesCallback = (theme: Theme) => ({
   root: {
@@ -57,13 +59,13 @@ type AudioSettingsProps = {
   autoPlay: boolean,
   ambience: number,
   bpm: number,
-  notes: Note[],
+  notes: NoteString[],
   octaveMin: number,
   octaveMax: number,
   toggleAutoPlay: (playing: boolean) => any,
   updateAmbience: (ambience: number) => any,
   updateBpm: (bpm: number) => any,
-  selectNotes: (notes: Note[]) => any,
+  selectNotes: (notes: NoteString[]) => any,
   updateOctaveMin: (octave: number) => any,
   updateOctaveMax: (octave: number) => any,
 }
@@ -128,8 +130,8 @@ export const AudioSettings: React.SFC<PropsWithStyles> = (props: PropsWithStyles
     updateOctaveMax(value);
   };
 
-  const allNotes: Note[] = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#'];
-  const renderNotesValue = (selected: Note[]) => selected.join(', ');
+  const allNotes: NoteString[] = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#'];
+  const renderNotesValue = (selected: NoteString[]) => selected.join(', ');
 
   return (
     <div className={classes.root}>

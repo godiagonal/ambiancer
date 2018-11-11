@@ -44,36 +44,16 @@ export class Synthesizer {
     return this._audioBus;
   }
   
-  toggleAutoPlay() {
-    if (this._autoPlayTimeout) {
-      this.stopAutoPlay();
+  toggleAutoPlay(on: boolean) {
+    if (on) {
+      this._startAutoPlay();
     } else {
-      this.startAutoPlay();
+      this._stopAutoPlay();
     }
     
     if (this._handleToggleAutoPlay) {
       this._handleToggleAutoPlay(Boolean(this._autoPlayTimeout));
     }
-  }
-
-  stopAutoPlay() {
-    if (this._autoPlayTimeout) {
-      clearInterval(this._autoPlayTimeout);
-      this._autoPlayTimeout = null;
-    }
-    this.releaseAll();
-  }
-
-  startAutoPlay() {
-    if (!this._autoPlayNoteGenerator) {
-      throw Error('Missing note generator.');
-    }
-
-    const interval = 60000 / this._autoPlayBpm; // 60,000ms (60s) / bpm
-    this._autoPlayTimeout = setInterval(() => {
-      const note = this._autoPlayNoteGenerator!.random();
-      this.playNote(note);
-    }, interval);
   }
 
   setAutoPlayNoteGenerator(noteGenerator: NoteGenerator) {
@@ -83,8 +63,8 @@ export class Synthesizer {
   setAutoPlayBpm(bpm: number) {
     this._autoPlayBpm = bpm;
     if (this._autoPlayTimeout) {
-      this.stopAutoPlay();
-      this.startAutoPlay();
+      this._stopAutoPlay();
+      this._startAutoPlay();
     }
   }
   
@@ -189,6 +169,29 @@ export class Synthesizer {
   onOctaveChanged(callback: (octave: number) => void) {
     this._handleOctaveChanged = callback;
     callback(this._baseOctave);
+  }
+
+  private _stopAutoPlay() {
+    if (this._autoPlayTimeout) {
+      clearInterval(this._autoPlayTimeout);
+      this._autoPlayTimeout = null;
+    }
+    this.releaseAll();
+  }
+
+  private _startAutoPlay() {
+    const interval = 60000 / this._autoPlayBpm; // 60,000ms (60s) / bpm
+    this._autoPlayTimeout = setInterval(() => {
+      if (this._autoPlayNoteGenerator) {
+        const note = this._autoPlayNoteGenerator.random();
+        if (note) {
+          this.playNote(note);
+        }
+        else if (this._lastNote) {
+          this.releaseNote(this._lastNote);
+        }
+      }
+    }, interval);
   }
   
   private _oscillatorForNoteString(noteOctaveString: string) {

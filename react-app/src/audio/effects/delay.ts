@@ -1,6 +1,6 @@
 import { Effect } from './effect';
 
-export class Delay extends Effect<AudioNode> {
+export class Delay extends Effect<GainNode> {
   private output: GainNode;
   private delay: DelayNode;
   private feedback: GainNode;

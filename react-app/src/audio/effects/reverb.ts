@@ -1,7 +1,8 @@
 import SbReverb from 'soundbank-reverb';
 import { Effect } from './effect';
 
-export class Reverb extends Effect<AudioNode> {
+// TODO: Typings for reverb node
+export class Reverb extends Effect<any> {
   constructor(context: AudioContext, name: string, enabled: boolean = true) {
     const node = SbReverb(context);
     node.time = 6;
