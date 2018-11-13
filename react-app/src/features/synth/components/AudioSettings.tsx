@@ -91,129 +91,189 @@ const mapDispatchToProps = (dispatch: Dispatch) => bindActionCreators({
   updateOctaveMax: synthActions.updateOctaveMax,
 }, dispatch);
 
-export const AudioSettings: React.SFC<PropsWithStyles> = (props: PropsWithStyles) => {
-  const {
-    classes, 
-    autoPlay,
-    ambience,
-    bpm,
-    notes,
-    octaveMin,
-    octaveMax,
-    toggleAutoPlay,
-    updateAmbience,
-    updateBpm,
-    selectNotes,
-    updateOctaveMin,
-    updateOctaveMax,
-  } = props;
+type State = {
+  ambience: number,
+  bpm: number,
+};
 
-  const notesErrorText = 'Select notes';
-  const octaveMinMin = 1;
-  const octaveMaxMax = 7;
+class AudioSettings extends React.Component<PropsWithStyles, State> {
+  private allNotes: NoteString[] = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#']
+  private notesErrorText: string = 'Select notes';
+  private octaveMinMin = 1;
+  private octaveMaxMax = 7;
 
-  const handleBpmChange = (e: any, value: number) => updateBpm(value ? value : 0);
-  const handleAmbienceChange = (e: any, value: number) => updateAmbience(value ? value : 0);
-  const handleNotesChange = (e: any) => {
-    selectNotes(e.target.value.filter((value: string) => value !== notesErrorText));
-  };
-  const handleOctaveMinChange = (e: any) => {
+  constructor(props: PropsWithStyles) {
+    super(props);
+
+    this.state = {
+      ambience: props.ambience || 0,
+      bpm: props.bpm || 0,
+    };
+
+    this.renderNotesValue = this.renderNotesValue.bind(this);
+    this.handleAmbienceChange = this.handleAmbienceChange.bind(this);
+    this.handleAmbienceChangeEnd = this.handleAmbienceChangeEnd.bind(this);
+    this.handleBpmChange = this.handleBpmChange.bind(this);
+    this.handleBpmChangeEnd = this.handleBpmChangeEnd.bind(this);
+    this.handleNotesChange = this.handleNotesChange.bind(this);
+    this.handleOctaveMinChange = this.handleOctaveMinChange.bind(this);
+    this.handleOctaveMaxChange = this.handleOctaveMaxChange.bind(this);
+  }
+
+  static getDerivedStateFromProps(nextProps: PropsWithStyles, prevState: State) {
+    const state: Partial<State> = {};
+    if (nextProps.ambience !== prevState.ambience) {
+      state.ambience = nextProps.ambience;
+    }
+    if (nextProps.bpm !== prevState.bpm) {
+      state.bpm = nextProps.bpm;
+    }
+    return state;
+  }
+
+  render() {
+    const {
+      classes, 
+      autoPlay,
+      notes,
+      octaveMin,
+      octaveMax,
+      toggleAutoPlay,
+    } = this.props;
+    const {
+      ambience,
+      bpm,
+    } = this.state;
+
+    return (
+      <div className={classes.root}>
+        <PlayButton
+          className={classes.button}
+          fullWidth
+          playing={autoPlay}
+          onValueChange={toggleAutoPlay}
+        >
+          Auto play
+        </PlayButton>
+        <FormControl className={classes.formControl} fullWidth>
+          <CustomSlider
+            label="Ambience"
+            value={ambience}
+            onChange={this.handleAmbienceChange}
+            onDragEnd={this.handleAmbienceChangeEnd}
+            step={1}
+            min={0}
+            max={100}
+          />
+        </FormControl>
+        <FormControl className={classes.formControl} fullWidth>
+          <CustomSlider
+            label="BPM"
+            value={bpm}
+            onChange={this.handleBpmChange}
+            onDragEnd={this.handleBpmChangeEnd}
+            step={1}
+            min={60}
+            max={300}
+          />
+        </FormControl>
+        <FormControl className={classes.formControl} fullWidth>
+          <InputLabel htmlFor="notes">
+            Notes
+          </InputLabel>
+          <Select
+            multiple
+            fullWidth
+            error={notes.length === 0}
+            value={notes.length > 0 ? notes : [this.notesErrorText]}
+            input={<Input id="notes" />}
+            onChange={this.handleNotesChange}
+            renderValue={this.renderNotesValue}
+          >
+            {this.allNotes.map(note => (
+              <MenuItem key={note} value={note}>
+                <Checkbox color="primary" checked={notes.indexOf(note) > -1} />
+                <ListItemText primary={note} />
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <FormControl className={classes.formControl} fullWidth>
+          <InputLabel htmlFor="octave-from" shrink>
+            Octave range
+          </InputLabel>
+          <div className={classes.rangeContainer}>
+            <div className={classes.rangeFrom}>
+              <TextField
+                fullWidth
+                label=" "
+                type="number"
+                value={octaveMin}
+                onChange={this.handleOctaveMinChange}
+                inputProps={{ min: this.octaveMinMin, max: octaveMax, step: 1 }}
+              />
+            </div>
+            <div className={classes.rangeSeparator}>-</div>
+            <div className={classes.rangeTo}>
+              <TextField
+                fullWidth
+                label=" "
+                type="number"
+                value={octaveMax}
+                onChange={this.handleOctaveMaxChange}
+                inputProps={{ min: octaveMin, max: this.octaveMaxMax, step: 1 }}
+              />
+            </div>
+          </div>
+        </FormControl>
+      </div>
+    );
+  }
+
+  private renderNotesValue(selected: NoteString[]) {
+    return selected.join(', ');
+  }
+
+  private handleAmbienceChange(e: any, value: number) {
+    this.setState({ ambience: value });
+  }
+
+  private handleAmbienceChangeEnd(e: any) {
+    const { updateAmbience } = this.props;
+    const { ambience } = this.state;
+    updateAmbience(ambience ? ambience : 0);
+  }
+
+  private handleBpmChange(e: any, value: number) {
+    this.setState({ bpm: value });
+  }
+
+  private handleBpmChangeEnd(e: any) {
+    const { updateBpm } = this.props;
+    const { bpm } = this.state;
+    updateBpm(bpm ? bpm : 0);
+  }
+
+  private handleNotesChange(e: any) {
+    const { selectNotes } = this.props;
+    selectNotes(e.target.value.filter((value: string) => value !== this.notesErrorText));
+  }
+
+  private handleOctaveMinChange(e: any) {
+    const { updateOctaveMin, octaveMax } = this.props;
     let value = Number(e.target.value);
-    if (value < octaveMinMin) { value = octaveMinMin }
+    if (value < this.octaveMinMin) { value = this.octaveMinMin }
     else if (value > octaveMax) { value = octaveMax }
     updateOctaveMin(value);
-  };
-  const handleOctaveMaxChange = (e: any) => {
+  }
+
+  private handleOctaveMaxChange(e: any) {
+    const { updateOctaveMax, octaveMin } = this.props;
     let value = Number(e.target.value);
     if (value < octaveMin) { value = octaveMin }
-    else if (value > octaveMaxMax) { value = octaveMaxMax }
+    else if (value > this.octaveMaxMax) { value = this.octaveMaxMax }
     updateOctaveMax(value);
-  };
-
-  const allNotes: NoteString[] = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#'];
-  const renderNotesValue = (selected: NoteString[]) => selected.join(', ');
-
-  return (
-    <div className={classes.root}>
-      <PlayButton
-        className={classes.button}
-        fullWidth
-        playing={autoPlay}
-        onValueChange={toggleAutoPlay}
-      >
-        Auto play
-      </PlayButton>
-      <FormControl className={classes.formControl} fullWidth>
-        <CustomSlider
-          label="Ambience"
-          value={ambience}
-          onChange={handleAmbienceChange}
-          step={1}
-          min={0}
-          max={100}
-        />
-      </FormControl>
-      <FormControl className={classes.formControl} fullWidth>
-        <CustomSlider
-          label="BPM"
-          value={bpm}
-          onChange={handleBpmChange}
-          step={1}
-          min={60}
-          max={300}
-        />
-      </FormControl>
-      <FormControl className={classes.formControl} fullWidth>
-        <InputLabel htmlFor="notes">
-          Notes
-        </InputLabel>
-        <Select
-          multiple
-          fullWidth
-          error={notes.length === 0}
-          value={notes.length > 0 ? notes : [notesErrorText]}
-          input={<Input id="notes" />}
-          onChange={handleNotesChange}
-          renderValue={renderNotesValue}
-        >
-          {allNotes.map(note => (
-            <MenuItem key={note} value={note}>
-              <Checkbox color="primary" checked={notes.indexOf(note) > -1} />
-              <ListItemText primary={note} />
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-      <FormControl className={classes.formControl} fullWidth>
-        <InputLabel htmlFor="octave-from" shrink>
-          Octave range
-        </InputLabel>
-        <div className={classes.rangeContainer}>
-          <div className={classes.rangeFrom}>
-            <TextField
-              fullWidth
-              label=" "
-              type="number"
-              value={octaveMin}
-              onChange={handleOctaveMinChange}
-              inputProps={{ min: octaveMinMin, max: octaveMax, step: 1 }}
-            />
-          </div>
-          <div className={classes.rangeSeparator}>-</div>
-          <div className={classes.rangeTo}>
-            <TextField
-              fullWidth
-              label=" "
-              type="number"
-              value={octaveMax}
-              onChange={handleOctaveMaxChange}
-              inputProps={{ min: octaveMin, max: octaveMaxMax, step: 1 }}
-            />
-          </div>
-        </div>
-      </FormControl>
-    </div>
-  );
-};
+  }
+}
 
 export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(AudioSettings));
