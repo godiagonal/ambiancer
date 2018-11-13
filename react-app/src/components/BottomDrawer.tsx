@@ -56,6 +56,14 @@ class BottomDrawer extends React.Component<PropsWithStyles, State> {
     this.state = {
       open: props.open!,
     };
+
+    this.resize = this.resize.bind(this);
+    this.swipingUp = this.swipingUp.bind(this);
+    this.swipingDown = this.swipingDown.bind(this);
+    this.swipedUp = this.swipedUp.bind(this);
+    this.swipedDown = this.swipedDown.bind(this);
+    this.updateContainerHeight = this.updateContainerHeight.bind(this);
+    this.getHeightForState = this.getHeightForState.bind(this);
   }
 
   static getDerivedStateFromProps(nextProps: PropsWithStyles, prevState: State) {
@@ -94,6 +102,25 @@ class BottomDrawer extends React.Component<PropsWithStyles, State> {
     if (this.props.onOpenStateChanged && prevState.open !== this.state.open) {
       this.props.onOpenStateChanged(this.state.open, this.getHeightForState());
     }
+  }
+
+  render() {
+    const { classes, children } = this.props;
+
+    return (
+      <div className={classes.root} ref={(containerRef: HTMLDivElement) => { this.containerRef = containerRef; }}>
+        <Swipeable
+          onSwipingUp={this.swipingUp}
+          onSwipingDown={this.swipingDown}
+          onSwipedUp={this.swipedUp}
+          onSwipedDown={this.swipedDown}
+        >
+          <div ref={(contentRef: HTMLDivElement) => { this.contentRef = contentRef; }}>
+              {children}
+          </div>
+        </Swipeable>
+      </div>
+    );
   }
 
   private resize = debounce(() => { 
@@ -152,25 +179,6 @@ class BottomDrawer extends React.Component<PropsWithStyles, State> {
 
   private getHeightForState = () => {
     return this.state.open ? this.contentHeight : this.props.closedHeight;
-  }
-
-  render() {
-    const { classes, children } = this.props;
-
-    return (
-      <div className={classes.root} ref={(containerRef: HTMLDivElement) => { this.containerRef = containerRef; }}>
-        <Swipeable
-          onSwipingUp={this.swipingUp}
-          onSwipingDown={this.swipingDown}
-          onSwipedUp={this.swipedUp}
-          onSwipedDown={this.swipedDown}
-        >
-          <div ref={(contentRef: HTMLDivElement) => { this.contentRef = contentRef; }}>
-              {children}
-          </div>
-        </Swipeable>
-      </div>
-    );
   }
 }
 
