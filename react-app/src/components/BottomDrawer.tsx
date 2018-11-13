@@ -57,7 +57,6 @@ class BottomDrawer extends React.Component<PropsWithStyles, State> {
       open: props.open!,
     };
 
-    this.resize = this.resize.bind(this);
     this.swipingUp = this.swipingUp.bind(this);
     this.swipingDown = this.swipingDown.bind(this);
     this.swipedUp = this.swipedUp.bind(this);
@@ -130,15 +129,15 @@ class BottomDrawer extends React.Component<PropsWithStyles, State> {
     this.updateContainerHeight(0);
   }, 100);
 
-  private swipingUp = (e: any, absY: number) => {
+  private swipingUp(e: any, absY: number) {
     this.updateContainerHeight(absY);
   }
 
-  private swipingDown = (e: any, absY: number) => {
+  private swipingDown(e: any, absY: number) {
     this.updateContainerHeight(-absY);
   }
 
-  private swipedUp = (e: any, deltaY: number, isFlick: boolean) => {
+  private swipedUp(e: any, deltaY: number, isFlick: boolean) {
     if (!this.state.open) {
       if (isFlick || deltaY > this.contentHeight * this.props.snapThreshold!) {
         this.setState({ open: true });
@@ -148,7 +147,7 @@ class BottomDrawer extends React.Component<PropsWithStyles, State> {
     }
   }
 
-  private swipedDown = (e: any, deltaY: number, isFlick: boolean) => {
+  private swipedDown(e: any, deltaY: number, isFlick: boolean) {
     if (this.state.open) {
       if (isFlick || -deltaY > this.contentHeight * this.props.snapThreshold!) {
         this.setState({ open: false });
@@ -158,7 +157,7 @@ class BottomDrawer extends React.Component<PropsWithStyles, State> {
     }
   }
 
-  private updateContainerHeight = (offset: number, transition: string = '') => {
+  private updateContainerHeight(offset: number, transition: string = '') {
     let height = this.getHeightForState();
 
     // offset is used to set a height that is somewhere inbetween the min
@@ -177,7 +176,7 @@ class BottomDrawer extends React.Component<PropsWithStyles, State> {
     containerStyle.transition = transition;
   }
 
-  private getHeightForState = () => {
+  private getHeightForState() {
     return this.state.open ? this.contentHeight : this.props.closedHeight;
   }
 }

@@ -18,6 +18,7 @@ import {
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
+import { debounce } from 'ts-debounce';
 
 import { NoteString } from 'src/audio';
 
@@ -112,9 +113,7 @@ class AudioSettings extends React.Component<PropsWithStyles, State> {
 
     this.renderNotesValue = this.renderNotesValue.bind(this);
     this.handleAmbienceChange = this.handleAmbienceChange.bind(this);
-    this.handleAmbienceChangeEnd = this.handleAmbienceChangeEnd.bind(this);
     this.handleBpmChange = this.handleBpmChange.bind(this);
-    this.handleBpmChangeEnd = this.handleBpmChangeEnd.bind(this);
     this.handleNotesChange = this.handleNotesChange.bind(this);
     this.handleOctaveMinChange = this.handleOctaveMinChange.bind(this);
     this.handleOctaveMaxChange = this.handleOctaveMaxChange.bind(this);
@@ -160,7 +159,6 @@ class AudioSettings extends React.Component<PropsWithStyles, State> {
             label="Ambience"
             value={ambience}
             onChange={this.handleAmbienceChange}
-            onDragEnd={this.handleAmbienceChangeEnd}
             step={1}
             min={0}
             max={100}
@@ -171,7 +169,6 @@ class AudioSettings extends React.Component<PropsWithStyles, State> {
             label="BPM"
             value={bpm}
             onChange={this.handleBpmChange}
-            onDragEnd={this.handleBpmChangeEnd}
             step={1}
             min={60}
             max={300}
@@ -236,23 +233,25 @@ class AudioSettings extends React.Component<PropsWithStyles, State> {
 
   private handleAmbienceChange(e: any, value: number) {
     this.setState({ ambience: value });
+    this.handleAmbienceChangeDelayed();
   }
 
-  private handleAmbienceChangeEnd(e: any) {
+  private handleAmbienceChangeDelayed = debounce(() => {
     const { updateAmbience } = this.props;
     const { ambience } = this.state;
     updateAmbience(ambience ? ambience : 0);
-  }
+  }, 200);
 
   private handleBpmChange(e: any, value: number) {
     this.setState({ bpm: value });
+    this.handleBpmChangeDelayed();
   }
 
-  private handleBpmChangeEnd(e: any) {
+  private handleBpmChangeDelayed = debounce(() => {
     const { updateBpm } = this.props;
     const { bpm } = this.state;
     updateBpm(bpm ? bpm : 0);
-  }
+  }, 200);
 
   private handleNotesChange(e: any) {
     const { selectNotes } = this.props;
