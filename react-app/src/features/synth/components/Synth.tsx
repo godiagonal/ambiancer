@@ -1,7 +1,6 @@
 import {
   Drawer,
   Hidden,
-  Typography,
 } from '@material-ui/core';
 import {
   StyleRulesCallback,
@@ -18,6 +17,7 @@ import { BottomDrawer } from '../../../components';
 import { RootState } from '../../../store';
 import { synthActions, synthSelectors } from '..';
 import AudioSettings from './AudioSettings';
+import Visualization from './Visualization';
 
 const styles: StyleRulesCallback = (theme: Theme) => ({
   root: {
@@ -35,7 +35,6 @@ const styles: StyleRulesCallback = (theme: Theme) => ({
   content: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
-    padding: theme.spacing.unit * 3,
   },
 });
 
@@ -58,7 +57,7 @@ export const Synth: React.SFC<PropsWithStyles> = (props: PropsWithStyles) => {
   const {
     classes,
     audioSettingsOpen,
-    toggleAudioSettings,
+    toggleAudioSettings
   } = props;
 
   const handleAudioSettingsToggle = (open: boolean) => toggleAudioSettings(open);
@@ -86,9 +85,7 @@ export const Synth: React.SFC<PropsWithStyles> = (props: PropsWithStyles) => {
         </Drawer>
       </Hidden>
       <main className={classes.content}>
-        <Typography>
-          {audioSettingsOpen ? 'Open' : 'Closed'}
-        </Typography>
+        <Visualization />
       </main>
     </div>
   );
