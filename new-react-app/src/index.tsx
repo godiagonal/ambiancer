@@ -1,14 +1,25 @@
 import React from "react";
 import { render } from "react-dom";
+import { CssBaseline, ThemeProvider } from "@material-ui/core";
+import { Provider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
 import { App } from "./App";
+import { configureStore } from "./store";
+import { theme } from "./theme";
 import * as serviceWorker from "./serviceWorker";
-import { withStore } from "./store/withStore";
 
-const Root = withStore(App);
+const { store, persistor } = configureStore();
 
 render(
   <React.StrictMode>
-    <Root />
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <App />
+        </ThemeProvider>
+      </PersistGate>
+    </Provider>
   </React.StrictMode>,
   document.getElementById("root"),
 );
