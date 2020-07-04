@@ -8,9 +8,6 @@
 		},
 		{
 			"path": "new-react-app"
-		},
-		{
-			"path": "../../web-viewer"
 		}
 	],
 	"settings": {}
