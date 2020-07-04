@@ -1,11 +1,14 @@
 import React from "react";
 import { render } from "react-dom";
-import { App } from "./containers/App";
+import { App } from "./App";
 import * as serviceWorker from "./serviceWorker";
+import { withStore } from "./store/withStore";
+
+const Root = withStore(App);
 
 render(
   <React.StrictMode>
-    <App />
+    <Root />
   </React.StrictMode>,
   document.getElementById("root"),
 );
