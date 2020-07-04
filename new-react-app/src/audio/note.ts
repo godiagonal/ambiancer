@@ -13,5 +13,8 @@ export type NoteString =
   | "G#";
 
 export class Note {
-  public constructor(public note: NoteString, public octave: number) {}
+  public constructor(
+    public readonly note: NoteString,
+    public readonly octave: number,
+  ) {}
 }
