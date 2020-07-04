@@ -20,10 +20,7 @@ const all = {
 };
 
 const js = {
-  parserOptions: {
-    ecmaVersion: 2020,
-    sourceType: "module",
-  },
+  parserOptions: {},
 };
 
 const ts = {
@@ -37,10 +34,7 @@ const ts = {
     "plugin:import/typescript",
   ],
   parser: "@typescript-eslint/parser",
-  parserOptions: {
-    ecmaVersion: 2020,
-    sourceType: "module",
-  },
+  parserOptions: {},
   settings: {
     "import/parsers": {
       "@typescript-eslint/parser": [".ts", ".tsx"],
