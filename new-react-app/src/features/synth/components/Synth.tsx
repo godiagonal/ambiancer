@@ -29,15 +29,12 @@ const useStyles = makeStyles((theme) => ({
 
 type SynthProps = {
   audioSettingsOpen: boolean;
-  toggleAudioSettings: (open: boolean) => any;
+  onToggleAudioSettings: (open: boolean) => any;
 };
 
 export const CoreSynth: React.FC<SynthProps> = (props) => {
   const classes = useStyles();
-  const { audioSettingsOpen, toggleAudioSettings } = props;
-
-  const handleAudioSettingsToggle = (open: boolean) =>
-    toggleAudioSettings(open);
+  const { audioSettingsOpen, onToggleAudioSettings } = props;
 
   return (
     <div className={classes.root}>
@@ -45,7 +42,7 @@ export const CoreSynth: React.FC<SynthProps> = (props) => {
         <BottomDrawer
           closedHeight={140}
           open={audioSettingsOpen}
-          onOpenStateChanged={handleAudioSettingsToggle}
+          onToggleOpen={onToggleAudioSettings}
         >
           <AudioSettings />
         </BottomDrawer>
@@ -75,7 +72,7 @@ export const Synth = connect(
   (dispatch: Dispatch) =>
     bindActionCreators(
       {
-        toggleAudioSettings: synthActions.toggleAudioSettings,
+        onToggleAudioSettings: synthActions.toggleAudioSettings,
       },
       dispatch,
     ),

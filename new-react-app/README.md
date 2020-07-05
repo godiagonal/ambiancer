@@ -4,7 +4,6 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 - Refactor existing components using hooks.
 - Evaluate the need for `typesafe-actions`.
-- Fix swipeable drawer component.
 
 ## Available Scripts
 
