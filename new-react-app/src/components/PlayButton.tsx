@@ -1,35 +1,24 @@
 import React from "react";
-import { makeStyles, Button, ButtonProps, Icon } from "@material-ui/core";
-
-const useStyles = makeStyles((theme) => ({
-  icon: {
-    marginRight: theme.spacing(1),
-  },
-}));
+import { Button, ButtonProps } from "@material-ui/core";
+import { Pause, PlayArrow } from "@material-ui/icons";
 
 export type PlayButtonProps = ButtonProps & {
-  playing?: boolean;
-  onValueChange?: (playing: boolean) => any;
+  playing: boolean;
+  onTogglePlaying?: (playing: boolean) => void;
 };
 
 export const PlayButton: React.FC<PlayButtonProps> = ({
   playing,
-  onValueChange,
-  children,
+  onTogglePlaying: onTogglePlaying,
   ...rest
 }) => {
-  const classes = useStyles();
-  const handleOnClick = () => onValueChange && onValueChange(!playing);
-
   return (
     <Button
       variant="contained"
       color={playing ? "primary" : "default"}
-      onClick={handleOnClick}
+      startIcon={playing ? <Pause /> : <PlayArrow />}
+      onClick={() => onTogglePlaying && onTogglePlaying(!playing)}
       {...rest}
-    >
-      <Icon className={classes.icon}>{playing ? "pause" : "play_arrow"}</Icon>
-      {children}
-    </Button>
+    />
   );
 };

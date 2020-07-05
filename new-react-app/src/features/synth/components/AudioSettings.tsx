@@ -148,7 +148,7 @@ class CoreAudioSettings extends React.Component<PropsWithStyles, State> {
           className={classes.button}
           fullWidth
           playing={autoPlay}
-          onValueChange={toggleAutoPlay}
+          onTogglePlaying={toggleAutoPlay}
         >
           Auto play
         </PlayButton>
