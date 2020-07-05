@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import {
@@ -60,29 +60,50 @@ export type AudioSettingsProps = {
   notes: NoteString[];
   octaveMin: number;
   octaveMax: number;
-  toggleAutoPlay: (playing: boolean) => any;
-  updateAmbience: (ambience: number) => any;
-  updateBpm: (bpm: number) => any;
-  selectNotes: (notes: NoteString[]) => any;
-  updateOctaveMin: (octave: number) => any;
-  updateOctaveMax: (octave: number) => any;
+  toggleAutoPlay: (playing: boolean) => void;
+  setAmbience: (ambience: number) => void;
+  setBpm: (bpm: number) => void;
+  selectNotes: (notes: NoteString[]) => void;
+  updateOctaveMin: (octave: number) => void;
+  updateOctaveMax: (octave: number) => void;
 };
 
 const CoreAudioSettings: React.FC<AudioSettingsProps> = ({
   autoPlay,
-  ambience,
-  bpm,
+  ambience: ambienceProp,
+  bpm: bpmProp,
   notes,
   octaveMin,
   octaveMax,
   toggleAutoPlay,
-  updateAmbience,
-  updateBpm,
+  setAmbience: setAmbienceProp,
+  setBpm: setBpmProp,
   selectNotes,
   updateOctaveMin,
   updateOctaveMax,
 }) => {
   const classes = useStyles();
+  const [ambience, setAmbience] = useState(ambienceProp);
+  const [bpm, setBpm] = useState(bpmProp);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debouncedSetAmbience = useCallback(
+    debounce((value) => setAmbienceProp(value), 200),
+    [setAmbienceProp],
+  );
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debouncedSetBpm = useCallback(
+    debounce((value) => setBpmProp(value), 200),
+    [setBpmProp],
+  );
+
+  useEffect(() => debouncedSetAmbience(ambience), [
+    ambience,
+    debouncedSetAmbience,
+  ]);
+
+  useEffect(() => debouncedSetBpm(bpm), [bpm, debouncedSetBpm]);
 
   return (
     <div className={classes.root}>
@@ -98,7 +119,7 @@ const CoreAudioSettings: React.FC<AudioSettingsProps> = ({
         Ambience
         <Slider
           value={ambience}
-          onChange={(_, value) => updateAmbience(value as number)}
+          onChange={(_, value) => setAmbience(value as number)}
           valueLabelDisplay="auto"
           step={1}
           min={0}
@@ -109,7 +130,7 @@ const CoreAudioSettings: React.FC<AudioSettingsProps> = ({
         BPM
         <Slider
           value={bpm}
-          onChange={(_, value) => updateBpm(value as number)}
+          onChange={(_, value) => setBpm(value as number)}
           valueLabelDisplay="auto"
           step={1}
           min={60}
@@ -198,8 +219,8 @@ export const AudioSettings = connect(
     bindActionCreators(
       {
         toggleAutoPlay: synthActions.toggleAutoPlay,
-        updateAmbience: synthActions.updateAmbience,
-        updateBpm: synthActions.updateBpm,
+        setAmbience: synthActions.updateAmbience,
+        setBpm: synthActions.updateBpm,
         selectNotes: synthActions.selectNotes,
         updateOctaveMin: synthActions.updateOctaveMin,
         updateOctaveMax: synthActions.updateOctaveMax,
