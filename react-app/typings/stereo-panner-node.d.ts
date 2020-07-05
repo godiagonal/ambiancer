@@ -1,1 +1,0 @@
-declare module 'stereo-panner-node';

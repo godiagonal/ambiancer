@@ -1,10 +1,5 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## To do
-
-- Use redux with hooks instead of connect.
-- Evaluate the need for `typesafe-actions`.
-
 ## Available Scripts
 
 In the project directory, you can run:
