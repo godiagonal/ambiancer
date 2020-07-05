@@ -2,7 +2,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## To do
 
-- Refactor existing components using hooks.
+- Use redux with hooks instead of connect.
 - Evaluate the need for `typesafe-actions`.
 
 ## Available Scripts
