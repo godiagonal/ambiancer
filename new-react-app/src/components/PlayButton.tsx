@@ -9,7 +9,7 @@ export type PlayButtonProps = ButtonProps & {
 
 export const PlayButton: React.FC<PlayButtonProps> = ({
   playing,
-  onTogglePlaying: onTogglePlaying,
+  onTogglePlaying,
   ...rest
 }) => {
   return (
