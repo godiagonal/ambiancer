@@ -3,10 +3,10 @@ import { render } from "react-dom";
 import { CssBaseline, ThemeProvider } from "@material-ui/core";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
-import { configureStore } from "./store";
+import { configureStore } from "./state";
 import { theme } from "./theme";
 import * as serviceWorker from "./serviceWorker";
-import { Synth } from "./features/synth/components";
+import { App } from "./containers";
 
 const { store, persistor } = configureStore();
 
@@ -16,7 +16,7 @@ render(
       <PersistGate loading={null} persistor={persistor}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          <Synth />
+          <App />
         </ThemeProvider>
       </PersistGate>
     </Provider>

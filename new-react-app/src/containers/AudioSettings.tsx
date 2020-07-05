@@ -13,9 +13,9 @@ import {
   Slider,
 } from "@material-ui/core";
 import { debounce } from "ts-debounce";
-import { NoteString, noteStrings, isNoteString } from "../../../audio";
-import { PlayButton } from "../../../components";
-import { synthActions } from "..";
+import { NoteString, noteStrings, isNoteString } from "../audio";
+import { PlayButton } from "../components";
+import { rootActions } from "../state";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -56,38 +56,38 @@ export const AudioSettings: React.FC = () => {
   const dispatch = useDispatch();
 
   // Auto play
-  const autoPlay = useSelector((state) => state.synth.autoPlay);
+  const autoPlay = useSelector((state) => state.autoPlay);
   const toggleAutoPlay = useCallback(
-    (value: boolean) => dispatch(synthActions.toggleAutoPlay(value)),
+    (value: boolean) => dispatch(rootActions.toggleAutoPlay(value)),
     [dispatch],
   );
 
   // Notes
-  const notes = useSelector((state) => state.synth.notes);
+  const notes = useSelector((state) => state.notes);
   const setNotes = useCallback(
-    (value: NoteString[]) => dispatch(synthActions.setNotes(value)),
+    (value: NoteString[]) => dispatch(rootActions.setNotes(value)),
     [dispatch],
   );
 
   // Octave min
-  const octaveMin = useSelector((state) => state.synth.octaveMin);
+  const octaveMin = useSelector((state) => state.octaveMin);
   const setOctaveMin = useCallback(
-    (value: number) => dispatch(synthActions.setOctaveMin(value)),
+    (value: number) => dispatch(rootActions.setOctaveMin(value)),
     [dispatch],
   );
 
   // Octave max
-  const octaveMax = useSelector((state) => state.synth.octaveMax);
+  const octaveMax = useSelector((state) => state.octaveMax);
   const setOctaveMax = useCallback(
-    (value: number) => dispatch(synthActions.setOctaveMax(value)),
+    (value: number) => dispatch(rootActions.setOctaveMax(value)),
     [dispatch],
   );
 
   // Ambience - Has internal state to debounce root state changes
-  const ambience = useSelector((state) => state.synth.ambience);
+  const ambience = useSelector((state) => state.ambience);
   const [ambienceInternal, setAmbienceInternal] = useState(ambience);
   const setAmbience = useCallback(
-    (value: number) => dispatch(synthActions.setAmbience(value)),
+    (value: number) => dispatch(rootActions.setAmbience(value)),
     [dispatch],
   );
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -101,10 +101,10 @@ export const AudioSettings: React.FC = () => {
   ]);
 
   // BPM - Has internal state to debounce root state changes
-  const bpm = useSelector((state) => state.synth.bpm);
+  const bpm = useSelector((state) => state.bpm);
   const [bpmInternal, setBpmInternal] = useState(bpm);
   const setBpm = useCallback(
-    (value: number) => dispatch(synthActions.setBpm(value)),
+    (value: number) => dispatch(rootActions.setBpm(value)),
     [dispatch],
   );
   // eslint-disable-next-line react-hooks/exhaustive-deps

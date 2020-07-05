@@ -2,7 +2,8 @@ import { applyMiddleware, createStore, Store } from "redux";
 import { logger } from "redux-logger";
 import { persistStore, persistReducer, Persistor } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import { rootReducer, RootState } from "./rootReducer";
+import { rootReducer } from "./reducer";
+import { RootState } from "./state";
 import { synthMiddleware } from "./synthMiddleware";
 
 const persistedReducer = persistReducer(

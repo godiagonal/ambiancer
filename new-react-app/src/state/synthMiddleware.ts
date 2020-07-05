@@ -9,7 +9,7 @@ import {
   Reverb,
   Synthesizer,
 } from "../audio";
-import { RootState } from "./rootReducer";
+import { RootState } from "./state";
 
 export function synthMiddleware(): Middleware<unknown, RootState> {
   const context = createAudioContext();
@@ -78,9 +78,9 @@ export function synthMiddleware(): Middleware<unknown, RootState> {
   const synthMiddleware: Middleware<unknown, RootState> = ({ getState }) => (
     next,
   ) => (action) => {
-    const prevState = getState().synth;
+    const prevState = getState();
     const returnValue = next(action);
-    const state = getState().synth;
+    const state = getState();
 
     if (prevState.autoPlay !== state.autoPlay) {
       synth.toggleAutoPlay(state.autoPlay);
