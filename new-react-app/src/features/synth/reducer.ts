@@ -26,7 +26,7 @@ export const synthReducer = combineReducers<SynthState, SynthAction>({
   },
   ambience: (state = 50, action) => {
     switch (action.type) {
-      case getType(synthActions.updateAmbience):
+      case getType(synthActions.setAmbience):
         return action.payload;
 
       default:
@@ -35,7 +35,7 @@ export const synthReducer = combineReducers<SynthState, SynthAction>({
   },
   bpm: (state = 120, action) => {
     switch (action.type) {
-      case getType(synthActions.updateBpm):
+      case getType(synthActions.setBpm):
         return action.payload;
 
       default:
@@ -44,7 +44,7 @@ export const synthReducer = combineReducers<SynthState, SynthAction>({
   },
   notes: (state = ["A", "D", "E", "F#", "G"], action) => {
     switch (action.type) {
-      case getType(synthActions.selectNotes):
+      case getType(synthActions.setNotes):
         return action.payload.sort((a, b) => {
           if (a < b) {
             return -1;
@@ -61,7 +61,7 @@ export const synthReducer = combineReducers<SynthState, SynthAction>({
   },
   octaveMin: (state = 3, action) => {
     switch (action.type) {
-      case getType(synthActions.updateOctaveMin):
+      case getType(synthActions.setOctaveMin):
         return action.payload;
 
       default:
@@ -70,7 +70,7 @@ export const synthReducer = combineReducers<SynthState, SynthAction>({
   },
   octaveMax: (state = 6, action) => {
     switch (action.type) {
-      case getType(synthActions.updateOctaveMax):
+      case getType(synthActions.setOctaveMax):
         return action.payload;
 
       default:

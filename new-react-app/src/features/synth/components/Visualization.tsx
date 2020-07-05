@@ -8,8 +8,6 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export type VisualizationProps = unknown;
-
 /*
 TODO: 
 - Throttled resizing of canvas on window resize.
@@ -17,7 +15,7 @@ TODO:
 - Pointer circle.
 - Touch events.
 */
-export const Visualization: React.FC<VisualizationProps> = () => {
+export const Visualization: React.FC = () => {
   const classes = useStyles();
 
   return <canvas className={classes.canvas} />;

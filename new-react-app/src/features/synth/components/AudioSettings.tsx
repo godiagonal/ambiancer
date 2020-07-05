@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
+import { useSelector, useDispatch } from "react-redux";
 import {
   Checkbox,
   FormControl,
@@ -16,8 +15,7 @@ import {
 import { debounce } from "ts-debounce";
 import { NoteString, noteStrings, isNoteString } from "../../../audio";
 import { PlayButton } from "../../../components";
-import { RootState } from "../../../store";
-import { synthActions, synthSelectors } from "..";
+import { synthActions } from "..";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -53,57 +51,68 @@ const octaveMinMin = 1;
 const octaveMaxMax = 7;
 const notesErrorText = "Select notes";
 
-export type AudioSettingsProps = {
-  autoPlay: boolean;
-  ambience: number;
-  bpm: number;
-  notes: NoteString[];
-  octaveMin: number;
-  octaveMax: number;
-  toggleAutoPlay: (playing: boolean) => void;
-  setAmbience: (ambience: number) => void;
-  setBpm: (bpm: number) => void;
-  selectNotes: (notes: NoteString[]) => void;
-  setOctaveMin: (octave: number) => void;
-  setOctaveMax: (octave: number) => void;
-};
-
-export const CoreAudioSettings: React.FC<AudioSettingsProps> = ({
-  autoPlay,
-  ambience: ambienceProp,
-  bpm: bpmProp,
-  notes,
-  octaveMin,
-  octaveMax,
-  toggleAutoPlay,
-  setAmbience: setAmbienceProp,
-  setBpm: setBpmProp,
-  selectNotes,
-  setOctaveMin,
-  setOctaveMax,
-}) => {
+export const AudioSettings: React.FC = () => {
   const classes = useStyles();
-  const [ambience, setAmbience] = useState(ambienceProp);
-  const [bpm, setBpm] = useState(bpmProp);
+  const dispatch = useDispatch();
 
+  // Auto play
+  const autoPlay = useSelector((state) => state.synth.autoPlay);
+  const toggleAutoPlay = useCallback(
+    (value: boolean) => dispatch(synthActions.toggleAutoPlay(value)),
+    [dispatch],
+  );
+
+  // Notes
+  const notes = useSelector((state) => state.synth.notes);
+  const setNotes = useCallback(
+    (value: NoteString[]) => dispatch(synthActions.setNotes(value)),
+    [dispatch],
+  );
+
+  // Octave min
+  const octaveMin = useSelector((state) => state.synth.octaveMin);
+  const setOctaveMin = useCallback(
+    (value: number) => dispatch(synthActions.setOctaveMin(value)),
+    [dispatch],
+  );
+
+  // Octave max
+  const octaveMax = useSelector((state) => state.synth.octaveMax);
+  const setOctaveMax = useCallback(
+    (value: number) => dispatch(synthActions.setOctaveMax(value)),
+    [dispatch],
+  );
+
+  // Ambience - Has internal state to debounce root state changes
+  const ambience = useSelector((state) => state.synth.ambience);
+  const [ambienceInternal, setAmbienceInternal] = useState(ambience);
+  const setAmbience = useCallback(
+    (value: number) => dispatch(synthActions.setAmbience(value)),
+    [dispatch],
+  );
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedSetAmbience = useCallback(
-    debounce((value) => setAmbienceProp(value), 200),
-    [setAmbienceProp],
+    debounce((value) => setAmbience(value), 200),
+    [setAmbience],
   );
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const debouncedSetBpm = useCallback(
-    debounce((value) => setBpmProp(value), 200),
-    [setBpmProp],
-  );
-
-  useEffect(() => debouncedSetAmbience(ambience), [
-    ambience,
+  useEffect(() => debouncedSetAmbience(ambienceInternal), [
+    ambienceInternal,
     debouncedSetAmbience,
   ]);
 
-  useEffect(() => debouncedSetBpm(bpm), [bpm, debouncedSetBpm]);
+  // BPM - Has internal state to debounce root state changes
+  const bpm = useSelector((state) => state.synth.bpm);
+  const [bpmInternal, setBpmInternal] = useState(bpm);
+  const setBpm = useCallback(
+    (value: number) => dispatch(synthActions.setBpm(value)),
+    [dispatch],
+  );
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debouncedSetBpm = useCallback(
+    debounce((value) => setBpm(value), 200),
+    [setBpm],
+  );
+  useEffect(() => debouncedSetBpm(bpmInternal), [bpmInternal, debouncedSetBpm]);
 
   return (
     <div className={classes.root}>
@@ -118,8 +127,8 @@ export const CoreAudioSettings: React.FC<AudioSettingsProps> = ({
       <FormControl className={classes.formControl} fullWidth>
         Ambience
         <Slider
-          value={ambience}
-          onChange={(_, value) => setAmbience(value as number)}
+          value={ambienceInternal}
+          onChange={(_, value) => setAmbienceInternal(value as number)}
           valueLabelDisplay="auto"
           step={1}
           min={0}
@@ -129,8 +138,8 @@ export const CoreAudioSettings: React.FC<AudioSettingsProps> = ({
       <FormControl className={classes.formControl} fullWidth>
         BPM
         <Slider
-          value={bpm}
-          onChange={(_, value) => setBpm(value as number)}
+          value={bpmInternal}
+          onChange={(_, value) => setBpmInternal(value as number)}
           valueLabelDisplay="auto"
           step={1}
           min={60}
@@ -146,7 +155,7 @@ export const CoreAudioSettings: React.FC<AudioSettingsProps> = ({
           value={notes.length > 0 ? notes : [notesErrorText]}
           input={<Input id="notes" />}
           onChange={(e) =>
-            selectNotes((e.target.value as string[]).filter(isNoteString))
+            setNotes((e.target.value as string[]).filter(isNoteString))
           }
           renderValue={(values) => (values as string[]).join(", ")}
         >
@@ -205,26 +214,3 @@ export const CoreAudioSettings: React.FC<AudioSettingsProps> = ({
     </div>
   );
 };
-
-export const AudioSettings = connect(
-  (state: RootState) => ({
-    autoPlay: synthSelectors.getAutoPlay(state.synth),
-    ambience: synthSelectors.getAmbience(state.synth),
-    bpm: synthSelectors.getBpm(state.synth),
-    notes: synthSelectors.getNotes(state.synth),
-    octaveMin: synthSelectors.getOctaveMin(state.synth),
-    octaveMax: synthSelectors.getOctaveMax(state.synth),
-  }),
-  (dispatch) =>
-    bindActionCreators(
-      {
-        toggleAutoPlay: synthActions.toggleAutoPlay,
-        setAmbience: synthActions.updateAmbience,
-        setBpm: synthActions.updateBpm,
-        selectNotes: synthActions.selectNotes,
-        setOctaveMin: synthActions.updateOctaveMin,
-        setOctaveMax: synthActions.updateOctaveMax,
-      },
-      dispatch,
-    ),
-)(CoreAudioSettings);

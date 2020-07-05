@@ -1,10 +1,8 @@
-import React from "react";
-import { connect } from "react-redux";
-import { bindActionCreators, Dispatch } from "redux";
+import React, { useCallback } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { makeStyles, Drawer, Hidden } from "@material-ui/core";
 import { BottomDrawer } from "../../../components";
-import { RootState } from "../../../store";
-import { synthActions, synthSelectors } from "..";
+import { synthActions } from "..";
 import { AudioSettings } from "./AudioSettings";
 import { Visualization } from "./Visualization";
 
@@ -39,14 +37,18 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export type SynthProps = {
-  audioSettingsOpen: boolean;
-  toggleAudioSettings: (open: boolean) => void;
-};
-
-export const CoreSynth: React.FC<SynthProps> = (props) => {
+export const Synth: React.FC = () => {
   const classes = useStyles();
-  const { audioSettingsOpen, toggleAudioSettings } = props;
+  const dispatch = useDispatch();
+
+  const audioSettingsOpen = useSelector(
+    (state) => state.synth.audioSettingsOpen,
+  );
+
+  const toggleAudioSettings = useCallback(
+    (value: boolean) => dispatch(synthActions.toggleAudioSettings(value)),
+    [dispatch],
+  );
 
   return (
     <div className={classes.root}>
@@ -76,16 +78,3 @@ export const CoreSynth: React.FC<SynthProps> = (props) => {
     </div>
   );
 };
-
-export const Synth = connect(
-  (state: RootState) => ({
-    audioSettingsOpen: synthSelectors.getAudioSettingsOpen(state.synth),
-  }),
-  (dispatch: Dispatch) =>
-    bindActionCreators(
-      {
-        toggleAudioSettings: synthActions.toggleAudioSettings,
-      },
-      dispatch,
-    ),
-)(CoreSynth);

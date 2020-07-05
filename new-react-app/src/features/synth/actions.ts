@@ -1,22 +1,18 @@
-import { createStandardAction } from "typesafe-actions";
+import { createStandardAction as createAction } from "typesafe-actions";
 import { NoteString } from "../../audio";
 
-export const toggleAudioSettings = createStandardAction(
-  "synth/TOGGLE_AUDIOSETTINGS",
-)<boolean>();
-export const toggleAutoPlay = createStandardAction("synth/TOGGLE_AUTOPLAY")<
+export const toggleAudioSettings = createAction("synth/TOGGLE_AUDIOSETTINGS")<
   boolean
 >();
-export const updateBpm = createStandardAction("synth/UPDATE_BPM")<number>();
-export const updateAmbience = createStandardAction("synth/UPDATE_AMBIENCE")<
-  number
->();
-export const selectNotes = createStandardAction("synth/SELECT_NOTES")<
-  NoteString[]
->();
-export const updateOctaveMin = createStandardAction("synth/UPDATE_OCTAVEMIN")<
-  number
->();
-export const updateOctaveMax = createStandardAction("synth/UPDATE_OCTAVEMAX")<
-  number
->();
+
+export const toggleAutoPlay = createAction("synth/TOGGLE_AUTOPLAY")<boolean>();
+
+export const setBpm = createAction("synth/UPDATE_BPM")<number>();
+
+export const setAmbience = createAction("synth/UPDATE_AMBIENCE")<number>();
+
+export const setNotes = createAction("synth/SELECT_NOTES")<NoteString[]>();
+
+export const setOctaveMin = createAction("synth/UPDATE_OCTAVEMIN")<number>();
+
+export const setOctaveMax = createAction("synth/UPDATE_OCTAVEMAX")<number>();
