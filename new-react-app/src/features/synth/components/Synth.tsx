@@ -9,13 +9,25 @@ import { AudioSettings } from "./AudioSettings";
 import { Visualization } from "./Visualization";
 
 const useStyles = makeStyles((theme) => ({
+  "@global": {
+    html: {
+      height: "100%",
+    },
+    body: {
+      height: "100%",
+      margin: "0",
+      overflow: "hidden",
+    },
+    "#root": {
+      height: "100%",
+    },
+  },
   root: {
-    flexGrow: 1,
-    zIndex: 1,
-    overflow: "hidden",
-    position: "relative",
     display: "flex",
+    position: "relative",
+    overflow: "hidden",
     width: "100%",
+    height: "100%",
   },
   drawerPaper: {
     width: 240,
