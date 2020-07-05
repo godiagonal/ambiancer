@@ -23,14 +23,14 @@ const snapThreshold = 0.2;
 export type BottomDrawerProps = {
   closedHeight: number;
   open: boolean;
-  onToggleOpen: (open: boolean) => void;
+  toggleOpen: (open: boolean) => void;
 };
 
 export const BottomDrawer: React.FC<BottomDrawerProps> = ({
   children,
   closedHeight,
   open,
-  onToggleOpen,
+  toggleOpen,
 }) => {
   const classes = useStyles();
   const theme = useTheme();
@@ -99,13 +99,13 @@ export const BottomDrawer: React.FC<BottomDrawerProps> = ({
       if (!open) {
         const openHeight = getOpenHeight();
         if (velocity > flickThreshold || deltaY > openHeight * snapThreshold) {
-          onToggleOpen(true);
+          toggleOpen(true);
         } else {
           resetContainerHeight();
         }
       }
     },
-    [open, onToggleOpen, getOpenHeight, resetContainerHeight],
+    [open, toggleOpen, getOpenHeight, resetContainerHeight],
   );
 
   const onSwipedDown = useCallback(
@@ -113,13 +113,13 @@ export const BottomDrawer: React.FC<BottomDrawerProps> = ({
       if (open) {
         const openHeight = getOpenHeight();
         if (velocity > flickThreshold || -deltaY > openHeight * snapThreshold) {
-          onToggleOpen(false);
+          toggleOpen(false);
         } else {
           resetContainerHeight();
         }
       }
     },
-    [open, onToggleOpen, getOpenHeight, resetContainerHeight],
+    [open, toggleOpen, getOpenHeight, resetContainerHeight],
   );
 
   // eslint-disable-next-line react-hooks/exhaustive-deps

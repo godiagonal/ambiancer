@@ -64,11 +64,11 @@ export type AudioSettingsProps = {
   setAmbience: (ambience: number) => void;
   setBpm: (bpm: number) => void;
   selectNotes: (notes: NoteString[]) => void;
-  updateOctaveMin: (octave: number) => void;
-  updateOctaveMax: (octave: number) => void;
+  setOctaveMin: (octave: number) => void;
+  setOctaveMax: (octave: number) => void;
 };
 
-const CoreAudioSettings: React.FC<AudioSettingsProps> = ({
+export const CoreAudioSettings: React.FC<AudioSettingsProps> = ({
   autoPlay,
   ambience: ambienceProp,
   bpm: bpmProp,
@@ -79,8 +79,8 @@ const CoreAudioSettings: React.FC<AudioSettingsProps> = ({
   setAmbience: setAmbienceProp,
   setBpm: setBpmProp,
   selectNotes,
-  updateOctaveMin,
-  updateOctaveMax,
+  setOctaveMin,
+  setOctaveMax,
 }) => {
   const classes = useStyles();
   const [ambience, setAmbience] = useState(ambienceProp);
@@ -111,7 +111,7 @@ const CoreAudioSettings: React.FC<AudioSettingsProps> = ({
         className={classes.button}
         fullWidth
         playing={autoPlay}
-        onTogglePlaying={toggleAutoPlay}
+        togglePlaying={toggleAutoPlay}
       >
         Auto play
       </PlayButton>
@@ -176,7 +176,7 @@ const CoreAudioSettings: React.FC<AudioSettingsProps> = ({
                 } else if (value > octaveMax) {
                   value = octaveMax;
                 }
-                updateOctaveMin(value);
+                setOctaveMin(value);
               }}
               inputProps={{ min: octaveMinMin, max: octaveMax, step: 1 }}
             />
@@ -195,7 +195,7 @@ const CoreAudioSettings: React.FC<AudioSettingsProps> = ({
                 } else if (value > octaveMaxMax) {
                   value = octaveMaxMax;
                 }
-                updateOctaveMax(value);
+                setOctaveMax(value);
               }}
               inputProps={{ min: octaveMin, max: octaveMaxMax, step: 1 }}
             />
@@ -222,8 +222,8 @@ export const AudioSettings = connect(
         setAmbience: synthActions.updateAmbience,
         setBpm: synthActions.updateBpm,
         selectNotes: synthActions.selectNotes,
-        updateOctaveMin: synthActions.updateOctaveMin,
-        updateOctaveMax: synthActions.updateOctaveMax,
+        setOctaveMin: synthActions.updateOctaveMin,
+        setOctaveMax: synthActions.updateOctaveMax,
       },
       dispatch,
     ),

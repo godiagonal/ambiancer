@@ -4,12 +4,12 @@ import { Pause, PlayArrow } from "@material-ui/icons";
 
 export type PlayButtonProps = ButtonProps & {
   playing: boolean;
-  onTogglePlaying?: (playing: boolean) => void;
+  togglePlaying?: (playing: boolean) => void;
 };
 
 export const PlayButton: React.FC<PlayButtonProps> = ({
   playing,
-  onTogglePlaying,
+  togglePlaying,
   ...rest
 }) => {
   return (
@@ -17,7 +17,7 @@ export const PlayButton: React.FC<PlayButtonProps> = ({
       variant="contained"
       color={playing ? "primary" : "default"}
       startIcon={playing ? <Pause /> : <PlayArrow />}
-      onClick={() => onTogglePlaying && onTogglePlaying(!playing)}
+      onClick={() => togglePlaying && togglePlaying(!playing)}
       {...rest}
     />
   );

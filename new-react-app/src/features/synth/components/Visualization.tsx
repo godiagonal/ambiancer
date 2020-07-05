@@ -1,8 +1,5 @@
-import * as React from "react";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
+import React from "react";
 import { makeStyles } from "@material-ui/core";
-import { RootState } from "../../../store";
 
 const useStyles = makeStyles(() => ({
   canvas: {
@@ -11,9 +8,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-type VisualizationProps = {
-  test?: boolean;
-};
+export type VisualizationProps = unknown;
 
 /*
 TODO: 
@@ -22,13 +17,8 @@ TODO:
 - Pointer circle.
 - Touch events.
 */
-export const CoreVisualization: React.FC<VisualizationProps> = () => {
+export const Visualization: React.FC<VisualizationProps> = () => {
   const classes = useStyles();
 
   return <canvas className={classes.canvas} />;
 };
-
-export const Visualization = connect(
-  (state: RootState) => ({}),
-  (dispatch) => bindActionCreators({}, dispatch),
-)(CoreVisualization);

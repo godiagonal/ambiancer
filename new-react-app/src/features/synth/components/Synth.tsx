@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators, Dispatch } from "redux";
 import { makeStyles, Drawer, Hidden } from "@material-ui/core";
@@ -39,14 +39,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-type SynthProps = {
+export type SynthProps = {
   audioSettingsOpen: boolean;
-  onToggleAudioSettings: (open: boolean) => any;
+  toggleAudioSettings: (open: boolean) => void;
 };
 
 export const CoreSynth: React.FC<SynthProps> = (props) => {
   const classes = useStyles();
-  const { audioSettingsOpen, onToggleAudioSettings } = props;
+  const { audioSettingsOpen, toggleAudioSettings } = props;
 
   return (
     <div className={classes.root}>
@@ -54,7 +54,7 @@ export const CoreSynth: React.FC<SynthProps> = (props) => {
         <BottomDrawer
           closedHeight={140}
           open={audioSettingsOpen}
-          onToggleOpen={onToggleAudioSettings}
+          toggleOpen={toggleAudioSettings}
         >
           <AudioSettings />
         </BottomDrawer>
@@ -84,7 +84,7 @@ export const Synth = connect(
   (dispatch: Dispatch) =>
     bindActionCreators(
       {
-        onToggleAudioSettings: synthActions.toggleAudioSettings,
+        toggleAudioSettings: synthActions.toggleAudioSettings,
       },
       dispatch,
     ),
