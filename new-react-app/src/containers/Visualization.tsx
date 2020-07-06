@@ -19,12 +19,12 @@ const useStyles = makeStyles((theme) => ({
     height: "100%",
     width: "100%",
     overflow: "hidden",
+    backgroundColor: getBackgroundColor(theme, [0.5, 0.5]),
+    transitionDuration: defaultTransitionDuration,
   },
   canvas: {
     maxHeight: "100%",
     userSelect: "none",
-    backgroundColor: getBackgroundColor(theme, [0.5, 0.5]),
-    transitionDuration: defaultTransitionDuration,
   },
 }));
 
@@ -44,7 +44,11 @@ const useCanvas = (): [
   return [elem, context, ref];
 };
 
-const useClientRect = (): [DOMRect | null, React.RefCallback<HTMLElement>] => {
+const useClientRect = (): [
+  HTMLElement | null,
+  DOMRect | null,
+  React.RefCallback<HTMLElement>,
+] => {
   const [elem, setElem] = useState<HTMLElement | null>(null);
   const [rect, setRect] = useState<DOMRect | null>(null);
   const resizeObserverRef = useRef<ResizeObserver>();
@@ -65,7 +69,7 @@ const useClientRect = (): [DOMRect | null, React.RefCallback<HTMLElement>] => {
       }
       setRect(elems[0].target.getBoundingClientRect());
     };
-    resizeObserverRef.current = new ResizeObserver(debounce(callback, 20));
+    resizeObserverRef.current = new ResizeObserver(debounce(callback, 50));
   }, []);
 
   useEffect(() => {
@@ -81,7 +85,7 @@ const useClientRect = (): [DOMRect | null, React.RefCallback<HTMLElement>] => {
     setRect(elem?.getBoundingClientRect() || null);
   }, [elem]);
 
-  return [rect, elemRef];
+  return [elem, rect, elemRef];
 };
 
 export const Visualization: React.FC = () => {
@@ -90,8 +94,8 @@ export const Visualization: React.FC = () => {
   const dispatch = useDispatch();
   const [touching, setTouching] = useState(false);
   const [touchPos, setTouchPos] = useState<[number, number]>([0, 0]);
-  const [elem, context, canvasRef] = useCanvas();
-  const [rect, rootRef] = useClientRect();
+  const [canvasElem, context, canvasRef] = useCanvas();
+  const [rootElem, rootRect, rootRef] = useClientRect();
   const autoPlay = useSelector((state) => state.autoPlay);
   const bpm = useSelector((state) => state.bpm);
 
@@ -103,96 +107,97 @@ export const Visualization: React.FC = () => {
 
   const setBackgroundColor = useCallback(
     (pos: [number, number]) => {
-      if (!elem) {
+      if (!rootElem) {
         return;
       }
-      elem.style.background = getBackgroundColor(theme, pos);
+      rootElem.style.background = getBackgroundColor(theme, pos);
     },
-    [elem, theme],
+    [rootElem, theme],
   );
 
   const onMouseDown = useCallback(
     (e: MouseEvent) => {
-      if (!rect) {
+      if (!rootRect) {
         return;
       }
-      setTouchPos([e.clientX - rect.left, e.clientY - rect.top]);
+      setTouchPos([e.clientX - rootRect.left, e.clientY - rootRect.top]);
       setTouching(true);
     },
-    [rect, setTouchPos],
+    [rootRect, setTouchPos],
   );
 
   const onMouseUp = useCallback(() => setTouching(false), []);
 
   const onMouseMove = useCallback(
     (e: MouseEvent) => {
-      if (!rect || !touching) {
+      if (!rootRect || !touching) {
         return;
       }
-      setTouchPos([e.clientX - rect.left, e.clientY - rect.top]);
+      setTouchPos([e.clientX - rootRect.left, e.clientY - rootRect.top]);
     },
-    [rect, touching, setTouchPos],
+    [rootRect, touching, setTouchPos],
   );
 
   useEffect(() => {
-    if (!elem || !rect) {
+    if (!canvasElem || !rootRect) {
       return;
     }
-    elem.width = rect.width;
-    elem.height = rect.height;
-  }, [rect, elem]);
+    canvasElem.width = rootRect.width;
+    canvasElem.height = rootRect.height;
+  }, [rootRect, canvasElem]);
 
   useEffect(() => {
-    if (!context || !rect) {
+    if (!context || !rootRect) {
       return;
     }
-    context.clearRect(0, 0, rect.width, rect.height);
+    context.clearRect(0, 0, rootRect.width, rootRect.height);
     if (touching && touchPos) {
       context.beginPath();
       context.arc(touchPos[0], touchPos[1], 25, 0, 2 * Math.PI, true);
       context.fillStyle = theme.palette.primary.light;
       context.fill();
     }
-  }, [context, rect, touching, touchPos, theme]);
+  }, [context, rootRect, touching, touchPos, theme]);
 
   useEffect(() => {
-    if (!rect) {
+    if (!rootRect) {
       return;
     }
     if (touching) {
       const relPos: [number, number] = [
-        Math.min(Math.max(touchPos[0] / rect.width, 0), 1),
-        Math.min(Math.max(touchPos[1] / rect.height, 0), 1),
+        Math.min(Math.max(touchPos[0] / rootRect.width, 0), 1),
+        Math.min(Math.max(touchPos[1] / rootRect.height, 0), 1),
       ];
       setBackgroundColor(relPos);
       setRelativeTouchPos(relPos);
     } else {
       setRelativeTouchPos(null);
     }
-  }, [rect, touching, touchPos, setRelativeTouchPos, setBackgroundColor]);
+  }, [rootRect, touching, touchPos, setRelativeTouchPos, setBackgroundColor]);
 
   useEffect(() => {
-    if (!autoPlay || !elem) {
+    if (!autoPlay || !rootElem) {
       return;
     }
     const interval = (60 / bpm) * 1000;
-    elem.style.transitionDuration = `${interval / 1000}s`;
-    const timer = setInterval(() => {
-      setBackgroundColor([Math.random(), Math.random()]);
-    }, interval);
+    rootElem.style.transitionDuration = `${interval / 1000}s`;
+    const timer = setInterval(
+      () => setBackgroundColor([Math.random(), Math.random()]),
+      interval,
+    );
     return () => {
-      elem.style.transitionDuration = defaultTransitionDuration;
+      rootElem.style.transitionDuration = defaultTransitionDuration;
       clearInterval(timer);
     };
-  }, [elem, bpm, autoPlay, setBackgroundColor]);
+  }, [rootElem, bpm, autoPlay, setBackgroundColor]);
 
   useEffect(() => {
-    if (!elem) {
+    if (!canvasElem) {
       return;
     }
 
     const onTouchStart = (e: TouchEvent) => {
-      elem.dispatchEvent(
+      canvasElem.dispatchEvent(
         new MouseEvent("mousedown", {
           clientX: e.touches[0].clientX,
           clientY: e.touches[0].clientY,
@@ -201,11 +206,11 @@ export const Visualization: React.FC = () => {
     };
 
     const onTouchEnd = () => {
-      elem.dispatchEvent(new MouseEvent("mouseup"));
+      canvasElem.dispatchEvent(new MouseEvent("mouseup"));
     };
 
     const onTouchMove = (e: TouchEvent) => {
-      elem.dispatchEvent(
+      canvasElem.dispatchEvent(
         new MouseEvent("mousemove", {
           clientX: e.touches[0].clientX,
           clientY: e.touches[0].clientY,
@@ -213,22 +218,22 @@ export const Visualization: React.FC = () => {
       );
     };
 
-    elem.addEventListener("mousedown", onMouseDown);
-    elem.addEventListener("mouseup", onMouseUp);
-    elem.addEventListener("mousemove", onMouseMove);
-    elem.addEventListener("touchstart", onTouchStart);
-    elem.addEventListener("touchend", onTouchEnd);
-    elem.addEventListener("touchmove", onTouchMove);
+    canvasElem.addEventListener("mousedown", onMouseDown);
+    canvasElem.addEventListener("mouseup", onMouseUp);
+    canvasElem.addEventListener("mousemove", onMouseMove);
+    canvasElem.addEventListener("touchstart", onTouchStart);
+    canvasElem.addEventListener("touchend", onTouchEnd);
+    canvasElem.addEventListener("touchmove", onTouchMove);
 
     return () => {
-      elem.removeEventListener("mousedown", onMouseDown);
-      elem.removeEventListener("mouseup", onMouseUp);
-      elem.removeEventListener("mousemove", onMouseMove);
-      elem.removeEventListener("touchstart", onTouchStart);
-      elem.removeEventListener("touchend", onTouchEnd);
-      elem.removeEventListener("touchmove", onTouchMove);
+      canvasElem.removeEventListener("mousedown", onMouseDown);
+      canvasElem.removeEventListener("mouseup", onMouseUp);
+      canvasElem.removeEventListener("mousemove", onMouseMove);
+      canvasElem.removeEventListener("touchstart", onTouchStart);
+      canvasElem.removeEventListener("touchend", onTouchEnd);
+      canvasElem.removeEventListener("touchmove", onTouchMove);
     };
-  }, [elem, onMouseDown, onMouseUp, onMouseMove]);
+  }, [canvasElem, onMouseDown, onMouseUp, onMouseMove]);
 
   return (
     <div className={classes.root} ref={rootRef}>
