@@ -7,6 +7,7 @@ import { configureStore } from "./state";
 import { theme } from "./theme";
 import * as serviceWorker from "./serviceWorker";
 import { App } from "./containers";
+import "./audio/polyfill";
 
 const { store, persistor } = configureStore();
 
