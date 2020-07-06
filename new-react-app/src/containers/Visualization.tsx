@@ -73,10 +73,6 @@ const useClientRect = (elem: HTMLElement | null): [DOMRect | null] => {
   return [rect];
 };
 
-/*
-TODO: 
-- Touch events.
-*/
 export const Visualization: React.FC = () => {
   const classes = useStyles();
   const theme = useTheme();
@@ -183,13 +179,43 @@ export const Visualization: React.FC = () => {
     if (!elem) {
       return;
     }
+
+    const onTouchStart = (e: TouchEvent) => {
+      elem.dispatchEvent(
+        new MouseEvent("mousedown", {
+          clientX: e.touches[0].clientX,
+          clientY: e.touches[0].clientY,
+        }),
+      );
+    };
+
+    const onTouchEnd = () => {
+      elem.dispatchEvent(new MouseEvent("mouseup"));
+    };
+
+    const onTouchMove = (e: TouchEvent) => {
+      elem.dispatchEvent(
+        new MouseEvent("mousemove", {
+          clientX: e.touches[0].clientX,
+          clientY: e.touches[0].clientY,
+        }),
+      );
+    };
+
     elem.addEventListener("mousedown", onMouseDown);
     elem.addEventListener("mouseup", onMouseUp);
     elem.addEventListener("mousemove", onMouseMove);
+    elem.addEventListener("touchstart", onTouchStart);
+    elem.addEventListener("touchend", onTouchEnd);
+    elem.addEventListener("touchmove", onTouchMove);
+
     return () => {
       elem.removeEventListener("mousedown", onMouseDown);
       elem.removeEventListener("mouseup", onMouseUp);
       elem.removeEventListener("mousemove", onMouseMove);
+      elem.removeEventListener("touchstart", onTouchStart);
+      elem.removeEventListener("touchend", onTouchEnd);
+      elem.removeEventListener("touchmove", onTouchMove);
     };
   }, [elem, onMouseDown, onMouseUp, onMouseMove]);
 
