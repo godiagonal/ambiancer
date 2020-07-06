@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { makeStyles, Drawer, Hidden } from "@material-ui/core";
+import { makeStyles, Drawer, Hidden, useTheme } from "@material-ui/core";
 import { BottomDrawer } from "../components";
 import { rootActions } from "../state";
 import { AudioSettings } from "./AudioSettings";
@@ -39,6 +39,7 @@ const useStyles = makeStyles((theme) => ({
 
 export const App: React.FC = () => {
   const classes = useStyles();
+  const { audioSettingsClosedHeight } = useTheme();
   const dispatch = useDispatch();
 
   const audioSettingsOpen = useSelector((state) => state.audioSettingsOpen);
@@ -51,7 +52,7 @@ export const App: React.FC = () => {
     <div className={classes.root}>
       <Hidden smUp>
         <BottomDrawer
-          closedHeight={140}
+          closedHeight={audioSettingsClosedHeight}
           open={audioSettingsOpen}
           toggleOpen={toggleAudioSettings}
         >
