@@ -150,8 +150,8 @@ export const Visualization: React.FC = () => {
     }
     if (touching) {
       const relPos: [number, number] = [
-        touchPos[0] / rect.width,
-        touchPos[1] / rect.height,
+        Math.min(Math.max(touchPos[0] / rect.width, 0), 1),
+        Math.min(Math.max(touchPos[1] / rect.height, 0), 1),
       ];
       setBackgroundColor(relPos);
       setRelativeTouchPos(relPos);
