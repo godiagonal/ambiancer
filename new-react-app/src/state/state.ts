@@ -15,4 +15,5 @@ export type RootState = Readonly<{
   notes: NoteString[];
   octaveMin: number;
   octaveMax: number;
+  touchPosition: [number, number] | null;
 }>;

@@ -107,6 +107,19 @@ export function synthMiddleware(): Middleware<unknown, RootState> {
       setAmbienceLevel(state.ambience * 0.01);
     }
 
+    if (prevState.touchPosition !== state.touchPosition) {
+      if (state.touchPosition && synth.noteGenerator) {
+        const note = synth.noteGenerator.fromXY(...state.touchPosition);
+        if (note) {
+          synth.playNote(note);
+        } else {
+          synth.releaseAll();
+        }
+      } else {
+        synth.releaseAll();
+      }
+    }
+
     return returnValue;
   };
 

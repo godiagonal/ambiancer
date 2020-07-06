@@ -1,8 +1,9 @@
 import React, { useEffect, useCallback, useState, useRef } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { makeStyles, useTheme } from "@material-ui/core";
 import ResizeObserver from "resize-observer-polyfill";
 import { debounce } from "ts-debounce";
+import { rootActions } from "../state";
 
 const useStyles = makeStyles(() => ({
   canvas: {
@@ -41,7 +42,6 @@ const useClientRect = (elem: HTMLElement | null): [DOMRect | null] => {
       if (elems.length === 0) {
         return;
       }
-      console.log("resize");
       setRect(elems[0].target.getBoundingClientRect());
     };
     resizeObserverRef.current = new ResizeObserver(debounce(callback, 20));
@@ -62,8 +62,6 @@ const useClientRect = (elem: HTMLElement | null): [DOMRect | null] => {
   return [rect];
 };
 
-export type TouchPosition = [number, number];
-
 /*
 TODO: 
 - Animate bg on auto play.
@@ -74,9 +72,15 @@ export const Visualization: React.FC = () => {
   const theme = useTheme();
   const dispatch = useDispatch();
   const [touching, setTouching] = useState(false);
-  const [touchPos, setTouchPos] = useState<TouchPosition>([0, 0]);
+  const [touchPos, setTouchPos] = useState<[number, number]>([0, 0]);
   const [elem, context, canvasRef] = useCanvas();
   const [rect] = useClientRect(elem);
+
+  const setRelativeTouchPos = useCallback(
+    (value: [number, number] | null) =>
+      dispatch(rootActions.setTouchPosition(value)),
+    [dispatch],
+  );
 
   const onMouseDown = useCallback(
     (e: MouseEvent) => {
@@ -86,7 +90,7 @@ export const Visualization: React.FC = () => {
       setTouchPos([e.clientX - rect.left, e.clientY - rect.top]);
       setTouching(true);
     },
-    [rect],
+    [rect, setTouchPos],
   );
 
   const onMouseUp = useCallback(() => setTouching(false), []);
@@ -98,7 +102,7 @@ export const Visualization: React.FC = () => {
       }
       setTouchPos([e.clientX - rect.left, e.clientY - rect.top]);
     },
-    [rect, touching],
+    [rect, touching, setTouchPos],
   );
 
   useEffect(() => {
@@ -116,18 +120,27 @@ export const Visualization: React.FC = () => {
 
     context.clearRect(0, 0, rect.width, rect.height);
 
-    if (touching) {
+    if (touching && touchPos) {
       context.beginPath();
       context.arc(touchPos[0], touchPos[1], 25, 0, 2 * Math.PI, true);
       context.fillStyle = theme.palette.primary.light;
       context.fill();
+    }
+  }, [context, rect, touching, touchPos, theme]);
 
+  useEffect(() => {
+    if (!rect) {
+      return;
+    }
+
+    if (touching) {
       const relX = touchPos[0] / rect.width;
       const relY = touchPos[1] / rect.height;
-
-      console.log(relX, relY);
+      setRelativeTouchPos([relX, relY]);
+    } else {
+      setRelativeTouchPos(null);
     }
-  }, [context, rect, touching, touchPos]);
+  }, [rect, touching, touchPos, setRelativeTouchPos]);
 
   useEffect(() => {
     if (!elem) {

@@ -75,4 +75,13 @@ export const rootReducer = combineReducers<RootState, RootAction>({
         return state;
     }
   },
+  touchPosition: (state = null, action) => {
+    switch (action.type) {
+      case getType(rootActions.setTouchPosition):
+        return action.payload;
+
+      default:
+        return state;
+    }
+  },
 });

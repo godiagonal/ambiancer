@@ -11,7 +11,7 @@ export class Synthesizer {
   private _oscillators: { [frequency: string]: Oscillator };
   private _baseOctave: number;
   private _audioBus: AudioBus;
-  private _autoPlayNoteGenerator: NoteGenerator | null;
+  private _noteGenerator: NoteGenerator | null;
   private _autoPlayBpm: number;
   private _autoPlayTimeout?: NodeJS.Timer;
   private _lastNote: Note | null;
@@ -35,7 +35,7 @@ export class Synthesizer {
     this._waveShape = waveShape;
     this._oscillators = {};
     this._baseOctave = 0;
-    this._autoPlayNoteGenerator = null;
+    this._noteGenerator = null;
     this._autoPlayBpm = 240;
 
     this._audioBus = new AudioBus(context);
@@ -47,6 +47,10 @@ export class Synthesizer {
 
   public get audioBus(): AudioBus {
     return this._audioBus;
+  }
+
+  public get noteGenerator(): NoteGenerator | null {
+    return this._noteGenerator;
   }
 
   public toggleAutoPlay(on: boolean): void {
@@ -62,7 +66,7 @@ export class Synthesizer {
   }
 
   public setAutoPlayNoteGenerator(noteGenerator: NoteGenerator): void {
-    this._autoPlayNoteGenerator = noteGenerator;
+    this._noteGenerator = noteGenerator;
   }
 
   public setAutoPlayBpm(bpm: number): void {
@@ -187,8 +191,8 @@ export class Synthesizer {
   private _startAutoPlay() {
     const interval = 60000 / this._autoPlayBpm; // 60,000ms (60s) / bpm
     this._autoPlayTimeout = setInterval(() => {
-      if (this._autoPlayNoteGenerator) {
-        const note = this._autoPlayNoteGenerator.random();
+      if (this._noteGenerator) {
+        const note = this._noteGenerator.random();
         if (note) {
           this.playNote(note);
         } else if (this._lastNote) {

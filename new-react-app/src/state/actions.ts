@@ -12,6 +12,7 @@ export const rootActions = {
   setNotes: createAction("SELECT_NOTES")<NoteString[]>(),
   setOctaveMin: createAction("SET_OCTAVEMIN")<number>(),
   setOctaveMax: createAction("SET_OCTAVEMAX")<number>(),
+  setTouchPosition: createAction("SET_TOUCHPOS")<[number, number] | null>(),
 };
 
 export type RootAction = ActionType<typeof rootActions>;
