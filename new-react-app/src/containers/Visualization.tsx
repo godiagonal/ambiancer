@@ -1,15 +1,26 @@
 import React, { useEffect, useCallback, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { makeStyles, useTheme } from "@material-ui/core";
+import { makeStyles, useTheme, Theme } from "@material-ui/core";
 import ResizeObserver from "resize-observer-polyfill";
 import { debounce } from "ts-debounce";
+import Chroma from "chroma-js";
 import { rootActions } from "../state";
 
-const useStyles = makeStyles(() => ({
+const defaultTransitionDuration = "0.1s";
+
+const getBackgroundColor = (theme: Theme, pos: [number, number]) =>
+  Chroma.mix(
+    Chroma.bezier(theme.canvasBackground.x)(pos[0]),
+    Chroma.bezier(theme.canvasBackground.y)(pos[1]),
+  ).hex();
+
+const useStyles = makeStyles((theme) => ({
   canvas: {
     height: "100%",
     width: "100%",
     userSelect: "none",
+    backgroundColor: getBackgroundColor(theme, [0.5, 0.5]),
+    transitionDuration: defaultTransitionDuration,
   },
 }));
 
@@ -64,7 +75,6 @@ const useClientRect = (elem: HTMLElement | null): [DOMRect | null] => {
 
 /*
 TODO: 
-- Animate bg on auto play.
 - Touch events.
 */
 export const Visualization: React.FC = () => {
@@ -75,11 +85,23 @@ export const Visualization: React.FC = () => {
   const [touchPos, setTouchPos] = useState<[number, number]>([0, 0]);
   const [elem, context, canvasRef] = useCanvas();
   const [rect] = useClientRect(elem);
+  const autoPlay = useSelector((state) => state.autoPlay);
+  const bpm = useSelector((state) => state.bpm);
 
   const setRelativeTouchPos = useCallback(
     (value: [number, number] | null) =>
       dispatch(rootActions.setTouchPosition(value)),
     [dispatch],
+  );
+
+  const setBackgroundColor = useCallback(
+    (pos: [number, number]) => {
+      if (!elem) {
+        return;
+      }
+      elem.style.background = getBackgroundColor(theme, pos);
+    },
+    [elem, theme],
   );
 
   const onMouseDown = useCallback(
@@ -117,9 +139,7 @@ export const Visualization: React.FC = () => {
     if (!context || !rect) {
       return;
     }
-
     context.clearRect(0, 0, rect.width, rect.height);
-
     if (touching && touchPos) {
       context.beginPath();
       context.arc(touchPos[0], touchPos[1], 25, 0, 2 * Math.PI, true);
@@ -132,15 +152,32 @@ export const Visualization: React.FC = () => {
     if (!rect) {
       return;
     }
-
     if (touching) {
-      const relX = touchPos[0] / rect.width;
-      const relY = touchPos[1] / rect.height;
-      setRelativeTouchPos([relX, relY]);
+      const relPos: [number, number] = [
+        touchPos[0] / rect.width,
+        touchPos[1] / rect.height,
+      ];
+      setBackgroundColor(relPos);
+      setRelativeTouchPos(relPos);
     } else {
       setRelativeTouchPos(null);
     }
-  }, [rect, touching, touchPos, setRelativeTouchPos]);
+  }, [rect, touching, touchPos, setRelativeTouchPos, setBackgroundColor]);
+
+  useEffect(() => {
+    if (!autoPlay || !elem) {
+      return;
+    }
+    const interval = (60 / bpm) * 1000;
+    elem.style.transitionDuration = `${interval / 1000}s`;
+    const timer = setInterval(() => {
+      setBackgroundColor([Math.random(), Math.random()]);
+    }, interval);
+    return () => {
+      elem.style.transitionDuration = defaultTransitionDuration;
+      clearInterval(timer);
+    };
+  }, [elem, bpm, autoPlay, setBackgroundColor]);
 
   useEffect(() => {
     if (!elem) {
