@@ -15,9 +15,13 @@ const getBackgroundColor = (theme: Theme, pos: [number, number]) =>
   ).hex();
 
 const useStyles = makeStyles((theme) => ({
-  canvas: {
+  root: {
     height: "100%",
     width: "100%",
+    overflow: "hidden",
+  },
+  canvas: {
+    maxHeight: "100%",
     userSelect: "none",
     backgroundColor: getBackgroundColor(theme, [0.5, 0.5]),
     transitionDuration: defaultTransitionDuration,
@@ -40,10 +44,16 @@ const useCanvas = (): [
   return [elem, context, ref];
 };
 
-const useClientRect = (elem: HTMLElement | null): [DOMRect | null] => {
+const useClientRect = (): [DOMRect | null, React.RefCallback<HTMLElement>] => {
+  const [elem, setElem] = useState<HTMLElement | null>(null);
   const [rect, setRect] = useState<DOMRect | null>(null);
-
   const resizeObserverRef = useRef<ResizeObserver>();
+
+  const elemRef: React.RefCallback<HTMLElement> = useCallback((node) => {
+    if (node !== null) {
+      setElem(node);
+    }
+  }, []);
 
   useEffect(() => {
     if (resizeObserverRef.current) {
@@ -70,7 +80,8 @@ const useClientRect = (elem: HTMLElement | null): [DOMRect | null] => {
   useEffect(() => {
     setRect(elem?.getBoundingClientRect() || null);
   }, [elem]);
-  return [rect];
+
+  return [rect, elemRef];
 };
 
 export const Visualization: React.FC = () => {
@@ -80,7 +91,7 @@ export const Visualization: React.FC = () => {
   const [touching, setTouching] = useState(false);
   const [touchPos, setTouchPos] = useState<[number, number]>([0, 0]);
   const [elem, context, canvasRef] = useCanvas();
-  const [rect] = useClientRect(elem);
+  const [rect, rootRef] = useClientRect();
   const autoPlay = useSelector((state) => state.autoPlay);
   const bpm = useSelector((state) => state.bpm);
 
@@ -219,5 +230,9 @@ export const Visualization: React.FC = () => {
     };
   }, [elem, onMouseDown, onMouseUp, onMouseMove]);
 
-  return <canvas className={classes.canvas} ref={canvasRef} />;
+  return (
+    <div className={classes.root} ref={rootRef}>
+      <canvas className={classes.canvas} ref={canvasRef} />
+    </div>
+  );
 };
