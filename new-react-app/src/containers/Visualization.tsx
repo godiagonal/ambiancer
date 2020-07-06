@@ -14,6 +14,8 @@ const getBackgroundColor = (theme: Theme, pos: [number, number]) =>
     Chroma.bezier(theme.canvasBackground.y)(pos[1]),
   ).hex();
 
+// TODO: fix bug where canvas keeps growing on iOS
+
 const useStyles = makeStyles((theme) => ({
   root: {
     height: "100%",
