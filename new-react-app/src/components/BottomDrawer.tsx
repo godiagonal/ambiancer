@@ -23,7 +23,8 @@ const snapThreshold = 0.2;
 export type BottomDrawerProps = {
   closedHeight: number;
   open: boolean;
-  toggleOpen: (open: boolean, height: number) => void;
+  toggleOpen: (open: boolean) => void;
+  setHeight: (height: number) => void;
 };
 
 export const BottomDrawer: React.FC<BottomDrawerProps> = ({
@@ -31,6 +32,7 @@ export const BottomDrawer: React.FC<BottomDrawerProps> = ({
   closedHeight,
   open,
   toggleOpen,
+  setHeight,
 }) => {
   const classes = useStyles();
   const theme = useTheme();
@@ -99,7 +101,7 @@ export const BottomDrawer: React.FC<BottomDrawerProps> = ({
       if (!open) {
         const openHeight = getOpenHeight();
         if (velocity > flickThreshold || deltaY > openHeight * snapThreshold) {
-          toggleOpen(true, openHeight);
+          toggleOpen(true);
         } else {
           resetContainerHeight();
         }
@@ -113,13 +115,13 @@ export const BottomDrawer: React.FC<BottomDrawerProps> = ({
       if (open) {
         const openHeight = getOpenHeight();
         if (velocity > flickThreshold || -deltaY > openHeight * snapThreshold) {
-          toggleOpen(false, closedHeight);
+          toggleOpen(false);
         } else {
           resetContainerHeight();
         }
       }
     },
-    [open, closedHeight, toggleOpen, getOpenHeight, resetContainerHeight],
+    [open, toggleOpen, getOpenHeight, resetContainerHeight],
   );
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -136,6 +138,13 @@ export const BottomDrawer: React.FC<BottomDrawerProps> = ({
   }, [onResize]);
 
   useEffect(() => resetContainerHeight(), [resetContainerHeight]);
+
+  useEffect(() => setHeight(open ? getOpenHeight() : closedHeight), [
+    open,
+    closedHeight,
+    setHeight,
+    getOpenHeight,
+  ]);
 
   return (
     <div className={classes.container} ref={containerRef}>

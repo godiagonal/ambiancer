@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   makeStyles,
@@ -47,17 +47,14 @@ export const App: React.FC = () => {
   const classes = useStyles();
   const theme = useTheme();
   const dispatch = useDispatch();
+  const xsScreen = useMediaQuery(theme.breakpoints.down("xs"));
+  const [audioSettingsHeight, setAudioSettingsHeight] = useState(0);
 
   const audioSettingsOpen = useSelector((state) => state.audioSettingsOpen);
   const toggleAudioSettings = useCallback(
-    (open: boolean, height: number) =>
-      dispatch(rootActions.toggleAudioSettings({ open, height })),
+    (open: boolean) => dispatch(rootActions.toggleAudioSettings(open)),
     [dispatch],
   );
-
-  const xsScreen = useMediaQuery(theme.breakpoints.down("xs"));
-  const audioSettingsHeight = useSelector((state) => state.audioSettingsHeight);
-  const visualizationOffset = xsScreen ? audioSettingsHeight : 0;
 
   return (
     <div className={classes.root}>
@@ -66,6 +63,7 @@ export const App: React.FC = () => {
           closedHeight={theme.audioSettingsClosedHeight}
           open={audioSettingsOpen}
           toggleOpen={toggleAudioSettings}
+          setHeight={setAudioSettingsHeight}
         >
           <AudioSettings />
         </BottomDrawer>
@@ -82,7 +80,7 @@ export const App: React.FC = () => {
         </Drawer>
       </Hidden>
       <main className={classes.content}>
-        <Visualization heightOffset={visualizationOffset} />
+        <Visualization heightOffset={xsScreen ? audioSettingsHeight : 0} />
       </main>
     </div>
   );
