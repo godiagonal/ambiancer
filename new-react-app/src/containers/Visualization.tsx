@@ -28,36 +28,26 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const useCanvas = (
+const useCanvasContext = (
   ref: React.RefObject<HTMLCanvasElement>,
-): [HTMLCanvasElement | null, CanvasRenderingContext2D | null] => {
-  const [elem, setElem] = useState<HTMLCanvasElement | null>(null);
+): [CanvasRenderingContext2D | null] => {
   const [context, setContext] = useState<CanvasRenderingContext2D | null>(null);
 
   useEffect(() => {
     if (!ref.current) {
       return;
     }
-    setElem(ref.current);
     setContext(ref.current.getContext("2d"));
   }, [ref]);
 
-  return [elem, context];
+  return [context];
 };
 
 const useClientRect = (
   elemRef: React.RefObject<HTMLElement>,
-): [HTMLElement | null, DOMRect | null] => {
-  const [elem, setElem] = useState<HTMLElement | null>(null);
+): [DOMRect | null] => {
   const [rect, setRect] = useState<DOMRect | null>(null);
   const resizeObserverRef = useRef<ResizeObserver>();
-
-  useEffect(() => {
-    if (!elemRef.current) {
-      return;
-    }
-    setElem(elemRef.current);
-  }, [elemRef]);
 
   useEffect(() => {
     if (resizeObserverRef.current) {
@@ -74,18 +64,19 @@ const useClientRect = (
 
   useEffect(() => {
     const resizeObserver = resizeObserverRef.current;
+    const elem = elemRef.current;
     if (!elem || !resizeObserver) {
       return;
     }
     resizeObserver.observe(elem);
     return () => resizeObserver.unobserve(elem);
-  }, [elem]);
+  }, [elemRef]);
 
   useEffect(() => {
-    setRect(elem?.getBoundingClientRect() || null);
-  }, [elem]);
+    setRect(elemRef.current?.getBoundingClientRect() || null);
+  }, [elemRef]);
 
-  return [elem, rect];
+  return [rect];
 };
 
 export type VisualizationProps = {
@@ -98,12 +89,19 @@ export const Visualization: React.FC<VisualizationProps> = ({
   const classes = useStyles();
   const theme = useTheme();
   const dispatch = useDispatch();
+
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const canvasElem = canvasRef.current;
   const rootRef = useRef<HTMLDivElement | null>(null);
+  const rootElem = rootRef.current;
+
   const [touching, setTouching] = useState(false);
   const [touchPos, setTouchPos] = useState<[number, number]>([0, 0]);
-  const [canvasElem, context] = useCanvas(canvasRef);
-  const [rootElem, rootRect] = useClientRect(rootRef);
+  const [canvasRect, setCanvasRect] = useState<DOMRect | null>(null);
+
+  const [rootRect] = useClientRect(rootRef);
+  const [context] = useCanvasContext(canvasRef);
+
   const autoPlay = useSelector((state) => state.autoPlay);
   const bpm = useSelector((state) => state.bpm);
 
@@ -125,63 +123,77 @@ export const Visualization: React.FC<VisualizationProps> = ({
 
   const onMouseDown = useCallback(
     (e: MouseEvent) => {
-      if (!rootRect) {
+      if (!canvasRect) {
         return;
       }
-      setTouchPos([e.clientX - rootRect.left, e.clientY - rootRect.top]);
+      setTouchPos([e.clientX - canvasRect.left, e.clientY - canvasRect.top]);
       setTouching(true);
     },
-    [rootRect, setTouchPos],
+    [canvasRect, setTouchPos],
   );
 
   const onMouseUp = useCallback(() => setTouching(false), []);
 
   const onMouseMove = useCallback(
     (e: MouseEvent) => {
-      if (!rootRect || !touching) {
+      if (!canvasRect || !touching) {
         return;
       }
-      setTouchPos([e.clientX - rootRect.left, e.clientY - rootRect.top]);
+      setTouchPos([e.clientX - canvasRect.left, e.clientY - canvasRect.top]);
     },
-    [rootRect, touching, setTouchPos],
+    [canvasRect, touching, setTouchPos],
   );
 
   useEffect(() => {
-    if (!canvasElem || !rootRect) {
+    if (!rootRect) {
       return;
     }
-    canvasElem.width = rootRect.width;
-    canvasElem.height = rootRect.height - heightOffset;
-  }, [rootRect, canvasElem, heightOffset]);
+    setCanvasRect(
+      new DOMRect(
+        rootRect.x,
+        rootRect.y,
+        rootRect.width,
+        rootRect.height - heightOffset,
+      ),
+    );
+  }, [rootRect, heightOffset]);
 
   useEffect(() => {
-    if (!context || !rootRect) {
+    if (!canvasElem || !canvasRect) {
       return;
     }
-    context.clearRect(0, 0, rootRect.width, rootRect.height);
+    canvasElem.width = canvasRect.width;
+    canvasElem.height = canvasRect.height;
+  }, [canvasRect, canvasElem]);
+
+  useEffect(() => {
+    if (!context || !canvasRect) {
+      return;
+    }
+    context.clearRect(0, 0, canvasRect.width, canvasRect.height);
     if (touching && touchPos) {
       context.beginPath();
       context.arc(touchPos[0], touchPos[1], 25, 0, 2 * Math.PI, true);
       context.fillStyle = theme.palette.primary.light;
       context.fill();
     }
-  }, [context, rootRect, touching, touchPos, theme]);
+  }, [context, canvasRect, touching, touchPos, theme]);
 
   useEffect(() => {
-    if (!rootRect) {
+    if (!canvasRect) {
       return;
     }
     if (touching) {
       const relPos: [number, number] = [
-        Math.min(Math.max(touchPos[0] / rootRect.width, 0), 1),
-        Math.min(Math.max(touchPos[1] / rootRect.height, 0), 1),
+        Math.min(Math.max(touchPos[0] / canvasRect.width, 0), 1),
+        Math.min(Math.max(touchPos[1] / canvasRect.height, 0), 1),
       ];
       setBackgroundColor(relPos);
       setRelativeTouchPos(relPos);
     } else {
       setRelativeTouchPos(null);
     }
-  }, [rootRect, touching, touchPos, setRelativeTouchPos, setBackgroundColor]);
+  }, [canvasRect, touching, touchPos, setRelativeTouchPos, setBackgroundColor]);
 
   useEffect(() => {
     if (!autoPlay || !rootElem) {
