@@ -9,6 +9,7 @@ declare module "react-redux" {
 
 export type RootState = Readonly<{
   audioSettingsOpen: boolean;
+  audioSettingsHeight: number;
   autoPlay: boolean;
   ambience: number;
   bpm: number;

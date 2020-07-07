@@ -2,6 +2,7 @@ import { applyMiddleware, createStore, Store } from "redux";
 import { logger } from "redux-logger";
 import { persistStore, persistReducer, Persistor } from "redux-persist";
 import storage from "redux-persist/lib/storage";
+import { theme } from "../theme";
 import { rootReducer } from "./reducer";
 import { RootState } from "./state";
 import { synthMiddleware } from "./synthMiddleware";
@@ -26,7 +27,9 @@ export function configureStore(): {
 
   const store: Store<RootState> = createStore(
     persistedReducer,
-    {},
+    {
+      audioSettingsHeight: theme.audioSettingsClosedHeight,
+    },
     applyMiddleware(...middleware),
   );
 

@@ -48,7 +48,8 @@ export const App: React.FC = () => {
 
   const audioSettingsOpen = useSelector((state) => state.audioSettingsOpen);
   const toggleAudioSettings = useCallback(
-    (value: boolean) => dispatch(rootActions.toggleAudioSettings(value)),
+    (open: boolean, height: number) =>
+      dispatch(rootActions.toggleAudioSettings({ open, height })),
     [dispatch],
   );
 

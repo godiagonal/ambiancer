@@ -5,7 +5,10 @@ import {
 import { NoteString } from "../audio";
 
 export const rootActions = {
-  toggleAudioSettings: createAction("TOGGLE_AUDIOSETTINGS")<boolean>(),
+  toggleAudioSettings: createAction("TOGGLE_AUDIOSETTINGS")<{
+    open: boolean;
+    height: number;
+  }>(),
   toggleAutoPlay: createAction("TOGGLE_AUTOPLAY")<boolean>(),
   setBpm: createAction("SET_BPM")<number>(),
   setAmbience: createAction("SET_AMBIENCE")<number>(),

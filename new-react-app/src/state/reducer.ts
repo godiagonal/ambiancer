@@ -7,7 +7,16 @@ export const rootReducer = combineReducers<RootState, RootAction>({
   audioSettingsOpen: (state = false, action) => {
     switch (action.type) {
       case getType(rootActions.toggleAudioSettings):
-        return action.payload;
+        return action.payload.open;
+
+      default:
+        return state;
+    }
+  },
+  audioSettingsHeight: (state = 0, action) => {
+    switch (action.type) {
+      case getType(rootActions.toggleAudioSettings):
+        return action.payload.height;
 
       default:
         return state;
