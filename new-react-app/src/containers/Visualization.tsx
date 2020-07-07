@@ -1,6 +1,6 @@
 import React, { useEffect, useCallback, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { makeStyles, useTheme, Theme } from "@material-ui/core";
+import { makeStyles, useTheme, Theme, useMediaQuery } from "@material-ui/core";
 import ResizeObserver from "resize-observer-polyfill";
 import { debounce } from "ts-debounce";
 import Chroma from "chroma-js";
@@ -13,8 +13,6 @@ const getBackgroundColor = (theme: Theme, pos: [number, number]) =>
     Chroma.bezier(theme.canvasBackground.x)(pos[0]),
     Chroma.bezier(theme.canvasBackground.y)(pos[1]),
   ).hex();
-
-// TODO: fix bug where canvas keeps growing on iOS
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -30,36 +28,36 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const useCanvas = (): [
-  HTMLCanvasElement | null,
-  CanvasRenderingContext2D | null,
-  React.RefCallback<HTMLCanvasElement>,
-] => {
+const useCanvas = (
+  ref: React.RefObject<HTMLCanvasElement>,
+): [HTMLCanvasElement | null, CanvasRenderingContext2D | null] => {
   const [elem, setElem] = useState<HTMLCanvasElement | null>(null);
   const [context, setContext] = useState<CanvasRenderingContext2D | null>(null);
-  const ref: React.RefCallback<HTMLCanvasElement> = useCallback((node) => {
-    if (node !== null) {
-      setElem(node);
-      setContext(node.getContext("2d"));
+
+  useEffect(() => {
+    if (!ref.current) {
+      return;
     }
-  }, []);
-  return [elem, context, ref];
+    setElem(ref.current);
+    setContext(ref.current.getContext("2d"));
+  }, [ref]);
+
+  return [elem, context];
 };
 
-const useClientRect = (): [
-  HTMLElement | null,
-  DOMRect | null,
-  React.RefCallback<HTMLElement>,
-] => {
+const useClientRect = (
+  elemRef: React.RefObject<HTMLElement>,
+): [HTMLElement | null, DOMRect | null] => {
   const [elem, setElem] = useState<HTMLElement | null>(null);
   const [rect, setRect] = useState<DOMRect | null>(null);
   const resizeObserverRef = useRef<ResizeObserver>();
 
-  const elemRef: React.RefCallback<HTMLElement> = useCallback((node) => {
-    if (node !== null) {
-      setElem(node);
+  useEffect(() => {
+    if (!elemRef.current) {
+      return;
     }
-  }, []);
+    setElem(elemRef.current);
+  }, [elemRef]);
 
   useEffect(() => {
     if (resizeObserverRef.current) {
@@ -87,19 +85,23 @@ const useClientRect = (): [
     setRect(elem?.getBoundingClientRect() || null);
   }, [elem]);
 
-  return [elem, rect, elemRef];
+  return [elem, rect];
 };
 
 export const Visualization: React.FC = () => {
   const classes = useStyles();
   const theme = useTheme();
   const dispatch = useDispatch();
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const rootRef = useRef<HTMLDivElement | null>(null);
   const [touching, setTouching] = useState(false);
   const [touchPos, setTouchPos] = useState<[number, number]>([0, 0]);
-  const [canvasElem, context, canvasRef] = useCanvas();
-  const [rootElem, rootRect, rootRef] = useClientRect();
+  const [canvasElem, context] = useCanvas(canvasRef);
+  const [rootElem, rootRect] = useClientRect(rootRef);
+  const audioSettingsHeight = useSelector((state) => state.audioSettingsHeight);
   const autoPlay = useSelector((state) => state.autoPlay);
   const bpm = useSelector((state) => state.bpm);
+  const xsScreen = useMediaQuery(theme.breakpoints.down("xs"));
 
   const setRelativeTouchPos = useCallback(
     (value: [number, number] | null) =>
@@ -144,9 +146,10 @@ export const Visualization: React.FC = () => {
     if (!canvasElem || !rootRect) {
       return;
     }
+    const heightOffset = xsScreen ? audioSettingsHeight : 0;
     canvasElem.width = rootRect.width;
-    canvasElem.height = rootRect.height;
-  }, [rootRect, canvasElem]);
+    canvasElem.height = rootRect.height - heightOffset;
+  }, [rootRect, canvasElem, audioSettingsHeight, xsScreen]);
 
   useEffect(() => {
     if (!context || !rootRect) {

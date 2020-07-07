@@ -26,9 +26,6 @@ const useStyles = makeStyles((theme) => ({
     overflow: "hidden",
     width: "100%",
     height: "100%",
-    [theme.breakpoints.down("xs")]: {
-      flexDirection: "column",
-    },
   },
   drawerPaper: {
     width: 240,
@@ -37,13 +34,12 @@ const useStyles = makeStyles((theme) => ({
   content: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
-    overflow: "hidden",
   },
 }));
 
 export const App: React.FC = () => {
   const classes = useStyles();
-  const { audioSettingsClosedHeight } = useTheme();
+  const theme = useTheme();
   const dispatch = useDispatch();
 
   const audioSettingsOpen = useSelector((state) => state.audioSettingsOpen);
@@ -55,6 +51,15 @@ export const App: React.FC = () => {
 
   return (
     <div className={classes.root}>
+      <Hidden smUp>
+        <BottomDrawer
+          closedHeight={theme.audioSettingsClosedHeight}
+          open={audioSettingsOpen}
+          toggleOpen={toggleAudioSettings}
+        >
+          <AudioSettings />
+        </BottomDrawer>
+      </Hidden>
       <Hidden xsDown>
         <Drawer
           variant="permanent"
@@ -69,15 +74,6 @@ export const App: React.FC = () => {
       <main className={classes.content}>
         <Visualization />
       </main>
-      <Hidden smUp>
-        <BottomDrawer
-          closedHeight={audioSettingsClosedHeight}
-          open={audioSettingsOpen}
-          toggleOpen={toggleAudioSettings}
-        >
-          <AudioSettings />
-        </BottomDrawer>
-      </Hidden>
     </div>
   );
 };

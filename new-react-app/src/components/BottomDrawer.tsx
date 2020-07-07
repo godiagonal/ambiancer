@@ -5,10 +5,15 @@ import { debounce } from "ts-debounce";
 
 const useStyles = makeStyles((theme) => ({
   container: {
+    position: "fixed",
+    bottom: 0,
+    left: 0,
+    right: 0,
     width: "100%",
     maxHeight: "100vh",
     backgroundColor: theme.palette.background.paper,
     borderTop: `1px solid ${theme.palette.divider}`,
+    zIndex: theme.zIndex.drawer,
   },
 }));
 
