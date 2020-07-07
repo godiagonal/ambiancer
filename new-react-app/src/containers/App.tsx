@@ -1,6 +1,12 @@
 import React, { useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { makeStyles, Drawer, Hidden, useTheme } from "@material-ui/core";
+import {
+  makeStyles,
+  Drawer,
+  Hidden,
+  useTheme,
+  useMediaQuery,
+} from "@material-ui/core";
 import { BottomDrawer } from "../components";
 import { rootActions } from "../state";
 import { AudioSettings } from "./AudioSettings";
@@ -49,6 +55,10 @@ export const App: React.FC = () => {
     [dispatch],
   );
 
+  const xsScreen = useMediaQuery(theme.breakpoints.down("xs"));
+  const audioSettingsHeight = useSelector((state) => state.audioSettingsHeight);
+  const visualizationOffset = xsScreen ? audioSettingsHeight : 0;
+
   return (
     <div className={classes.root}>
       <Hidden smUp>
@@ -72,7 +82,7 @@ export const App: React.FC = () => {
         </Drawer>
       </Hidden>
       <main className={classes.content}>
-        <Visualization />
+        <Visualization heightOffset={visualizationOffset} />
       </main>
     </div>
   );

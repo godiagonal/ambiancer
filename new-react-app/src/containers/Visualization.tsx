@@ -1,6 +1,6 @@
 import React, { useEffect, useCallback, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { makeStyles, useTheme, Theme, useMediaQuery } from "@material-ui/core";
+import { makeStyles, useTheme, Theme } from "@material-ui/core";
 import ResizeObserver from "resize-observer-polyfill";
 import { debounce } from "ts-debounce";
 import Chroma from "chroma-js";
@@ -88,7 +88,13 @@ const useClientRect = (
   return [elem, rect];
 };
 
-export const Visualization: React.FC = () => {
+export type VisualizationProps = {
+  heightOffset: number;
+};
+
+export const Visualization: React.FC<VisualizationProps> = ({
+  heightOffset,
+}) => {
   const classes = useStyles();
   const theme = useTheme();
   const dispatch = useDispatch();
@@ -98,10 +104,8 @@ export const Visualization: React.FC = () => {
   const [touchPos, setTouchPos] = useState<[number, number]>([0, 0]);
   const [canvasElem, context] = useCanvas(canvasRef);
   const [rootElem, rootRect] = useClientRect(rootRef);
-  const audioSettingsHeight = useSelector((state) => state.audioSettingsHeight);
   const autoPlay = useSelector((state) => state.autoPlay);
   const bpm = useSelector((state) => state.bpm);
-  const xsScreen = useMediaQuery(theme.breakpoints.down("xs"));
 
   const setRelativeTouchPos = useCallback(
     (value: [number, number] | null) =>
@@ -146,10 +150,9 @@ export const Visualization: React.FC = () => {
     if (!canvasElem || !rootRect) {
       return;
     }
-    const heightOffset = xsScreen ? audioSettingsHeight : 0;
     canvasElem.width = rootRect.width;
     canvasElem.height = rootRect.height - heightOffset;
-  }, [rootRect, canvasElem, audioSettingsHeight, xsScreen]);
+  }, [rootRect, canvasElem, heightOffset]);
 
   useEffect(() => {
     if (!context || !rootRect) {
