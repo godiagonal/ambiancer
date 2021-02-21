@@ -12,14 +12,19 @@ const useStyles = makeStyles(() => {
       opacity: 0,
       pointerEvents: "none",
     },
-    button: {},
+    button: {
+      // Use hardcoded height in order to precent flicker when
+      // toggling variants
+      height: 36,
+    },
     iconButton: {
       flex: "0 0 auto",
       minWidth: 0,
       padding: 7,
       borderRadius: "50%",
       textAlign: "center",
-      overflow: "visible", // Explicitly set the default value to solve a bug on IE 11
+      // Explicitly set the default value to solve a bug on IE 11
+      overflow: "visible",
     },
     icon: {
       fontSize: 20,
