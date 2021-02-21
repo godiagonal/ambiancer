@@ -71,6 +71,6 @@ export const theme = createMuiTheme({
     x: ["#003f5c", "#bc5090"],
     y: ["#C8C8A9", "#83AF9B"],
   },
-  audioSettingsClosedHeight: 140,
+  audioSettingsClosedHeight: 150,
   audioSettingsWidth: 300,
 });

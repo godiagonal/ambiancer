@@ -1,10 +1,33 @@
-import React, { useRef, useEffect, useCallback } from "react";
+import React, { useRef, useEffect, useCallback, useState } from "react";
 import { Swipeable, EventData } from "react-swipeable";
-import { makeStyles, useTheme } from "@material-ui/core";
-import { debounce } from "ts-debounce";
+import { makeStyles, useTheme, fade } from "@material-ui/core";
 import { ExpandMore } from "@material-ui/icons";
+import { debounce } from "ts-debounce";
+import clsx from "clsx";
 
 const useStyles = makeStyles((theme) => ({
+  "@keyframes pulse": {
+    "0%": {
+      transform: "scale(0.75)",
+      opacity: 0.25,
+    },
+    "50%": {
+      transform: "scale(1)",
+      opacity: 1,
+    },
+    "100%": {
+      transform: "scale(0.75)",
+      opacity: 0.25,
+    },
+  },
+  "@keyframes fadeOut": {
+    "0%": {
+      opacity: 1,
+    },
+    "100%": {
+      opacity: 0,
+    },
+  },
   container: {
     position: "fixed",
     bottom: 0,
@@ -15,6 +38,34 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.paper,
     borderTop: `1px solid ${theme.palette.divider}`,
     zIndex: theme.zIndex.drawer,
+  },
+  scrollIndicator: {
+    position: "fixed",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    display: "flex",
+    justifyContent: "center",
+    height: 30,
+    pointerEvents: "none",
+    background: `linear-gradient(0deg, ${fade(
+      theme.palette.background.paper,
+      1,
+    )} 0%, rgba(0,0,0,0) 100%)`,
+  },
+  scrollIndicatorIcon: {
+    animationName: "$pulse",
+    animationFillMode: "forwards",
+    animationTimingFunction: theme.transitions.easing.easeInOut,
+    animationDuration: "3000ms",
+    animationIterationCount: "infinite",
+  },
+  scrollIndicatorIconHidden: {
+    animationName: "$fadeOut",
+    animationFillMode: "forwards",
+    animationTimingFunction: theme.transitions.easing.easeInOut,
+    animationDuration: "1500ms",
+    animationIterationCount: 1,
   },
 }));
 
@@ -39,6 +90,7 @@ export const BottomDrawer: React.FC<BottomDrawerProps> = ({
   const theme = useTheme();
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const [hasSwiped, setHasSwiped] = useState(false);
 
   const getOpenHeight = useCallback(
     () => contentRef.current?.clientHeight || 0,
@@ -103,6 +155,7 @@ export const BottomDrawer: React.FC<BottomDrawerProps> = ({
         const openHeight = getOpenHeight();
         if (velocity > flickThreshold || deltaY > openHeight * snapThreshold) {
           toggleOpen(true);
+          setHasSwiped(true);
         } else {
           resetContainerHeight();
         }
@@ -117,6 +170,7 @@ export const BottomDrawer: React.FC<BottomDrawerProps> = ({
         const openHeight = getOpenHeight();
         if (velocity > flickThreshold || -deltaY > openHeight * snapThreshold) {
           toggleOpen(false);
+          setHasSwiped(true);
         } else {
           resetContainerHeight();
         }
@@ -156,19 +210,12 @@ export const BottomDrawer: React.FC<BottomDrawerProps> = ({
       >
         <div ref={contentRef}>{children}</div>
       </Swipeable>
-      {/* TODO: implement properly */}
-      <div
-        style={{
-          position: "fixed",
-          bottom: 0,
-          left: 0,
-          right: 0,
-          height: 36,
-          pointerEvents: "none",
-          textAlign: "center",
-        }}
-      >
-        <ExpandMore />
+      <div className={classes.scrollIndicator}>
+        <ExpandMore
+          className={clsx(classes.scrollIndicatorIcon, {
+            [classes.scrollIndicatorIconHidden]: hasSwiped,
+          })}
+        />
       </div>
     </div>
   );

@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2),
   },
   button: {
-    marginBottom: theme.spacing(3),
+    marginBottom: theme.spacing(2),
   },
   formControl: {
     marginBottom: theme.spacing(2),
