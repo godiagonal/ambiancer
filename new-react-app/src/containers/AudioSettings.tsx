@@ -1,19 +1,10 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  Checkbox,
-  FormControl,
-  Input,
-  InputLabel,
-  ListItemText,
-  MenuItem,
-  Select,
-  makeStyles,
-  Slider,
-} from "@material-ui/core";
+import { FormControl, makeStyles, Slider } from "@material-ui/core";
+import { Pause, PlayArrow } from "@material-ui/icons";
 import { debounce } from "ts-debounce";
 import { NoteString, noteStrings, isNoteString } from "../audio";
-import { PlayButton } from "../components";
+import { GridSelect, ToggleButton } from "../components";
 import { rootActions } from "../state";
 
 const useStyles = makeStyles((theme) => ({
@@ -48,7 +39,6 @@ const useStyles = makeStyles((theme) => ({
 
 const octaveMinMin = 1;
 const octaveMaxMax = 7;
-const notesErrorText = "Select notes";
 
 export const AudioSettings: React.FC = () => {
   const classes = useStyles();
@@ -115,14 +105,16 @@ export const AudioSettings: React.FC = () => {
 
   return (
     <div className={classes.root}>
-      <PlayButton
+      <ToggleButton
         className={classes.button}
         fullWidth
-        playing={autoPlay}
-        togglePlaying={toggleAutoPlay}
+        color="primary"
+        icons={[<Pause key="pause" />, <PlayArrow key="play" />]}
+        value={autoPlay}
+        onChange={toggleAutoPlay}
       >
         Auto play
-      </PlayButton>
+      </ToggleButton>
       <FormControl className={classes.formControl} fullWidth>
         Ambience
         <Slider
@@ -164,25 +156,22 @@ export const AudioSettings: React.FC = () => {
         />
       </FormControl>
       <FormControl className={classes.formControl} fullWidth>
-        <InputLabel htmlFor="notes">Notes</InputLabel>
-        <Select
+        Notes
+        <GridSelect
+          color="primary"
+          spacing={1}
+          size={{
+            xs: 2,
+            sm: 3,
+          }}
           multiple
-          fullWidth
-          error={notes.length === 0}
-          value={notes.length > 0 ? notes : [notesErrorText]}
-          input={<Input id="notes" />}
-          onChange={(e) =>
-            setNotes((e.target.value as string[]).filter(isNoteString))
-          }
-          renderValue={(values) => (values as string[]).join(", ")}
-        >
-          {noteStrings.map((note) => (
-            <MenuItem key={note} value={note}>
-              <Checkbox color="primary" checked={notes.indexOf(note) > -1} />
-              <ListItemText primary={note} />
-            </MenuItem>
-          ))}
-        </Select>
+          values={noteStrings.map((note) => ({
+            value: note,
+            label: note,
+          }))}
+          value={notes}
+          onChange={(values) => setNotes(values.filter(isNoteString))}
+        />
       </FormControl>
     </div>
   );
