@@ -8,7 +8,6 @@ import {
   ListItemText,
   MenuItem,
   Select,
-  TextField,
   makeStyles,
   Slider,
 } from "@material-ui/core";
@@ -136,7 +135,7 @@ export const AudioSettings: React.FC = () => {
         />
       </FormControl>
       <FormControl className={classes.formControl} fullWidth>
-        BPM
+        Beats Per Minute
         <Slider
           value={bpmInternal}
           onChange={(_, value) => setBpmInternal(value as number)}
@@ -144,6 +143,24 @@ export const AudioSettings: React.FC = () => {
           step={1}
           min={60}
           max={300}
+        />
+      </FormControl>
+      <FormControl className={classes.formControl} fullWidth>
+        Octave Range
+        <Slider
+          value={[octaveMin, octaveMax]}
+          onChange={(_, values) => {
+            if (!Array.isArray(values)) {
+              return;
+            }
+            const [min, max] = values;
+            setOctaveMin(min);
+            setOctaveMax(max);
+          }}
+          valueLabelDisplay="auto"
+          step={1}
+          min={octaveMinMin}
+          max={octaveMaxMax}
         />
       </FormControl>
       <FormControl className={classes.formControl} fullWidth>
@@ -166,50 +183,6 @@ export const AudioSettings: React.FC = () => {
             </MenuItem>
           ))}
         </Select>
-      </FormControl>
-      <FormControl className={classes.formControl} fullWidth>
-        <InputLabel htmlFor="octave-from" shrink>
-          Octave range
-        </InputLabel>
-        <div className={classes.rangeContainer}>
-          <div className={classes.rangeFrom}>
-            <TextField
-              fullWidth
-              label=" "
-              type="number"
-              value={octaveMin}
-              onChange={(e) => {
-                let value = Number(e.target.value);
-                if (value < octaveMinMin) {
-                  value = octaveMinMin;
-                } else if (value > octaveMax) {
-                  value = octaveMax;
-                }
-                setOctaveMin(value);
-              }}
-              inputProps={{ min: octaveMinMin, max: octaveMax, step: 1 }}
-            />
-          </div>
-          <div className={classes.rangeSeparator}>-</div>
-          <div className={classes.rangeTo}>
-            <TextField
-              fullWidth
-              label=" "
-              type="number"
-              value={octaveMax}
-              onChange={(e) => {
-                let value = Number(e.target.value);
-                if (value < octaveMin) {
-                  value = octaveMin;
-                } else if (value > octaveMaxMax) {
-                  value = octaveMaxMax;
-                }
-                setOctaveMax(value);
-              }}
-              inputProps={{ min: octaveMin, max: octaveMaxMax, step: 1 }}
-            />
-          </div>
-        </div>
       </FormControl>
     </div>
   );
