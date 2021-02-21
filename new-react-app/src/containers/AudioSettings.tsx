@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { FormControl, makeStyles, Slider } from "@material-ui/core";
+import { FormControl, makeStyles, Slider, Typography } from "@material-ui/core";
 import { Pause, PlayArrow } from "@material-ui/icons";
 import { debounce } from "ts-debounce";
 import { NoteString, noteStrings, isNoteString } from "../audio";
@@ -17,23 +17,10 @@ const useStyles = makeStyles((theme) => ({
   formControl: {
     marginBottom: theme.spacing(2),
   },
-  rangeContainer: {
-    display: "flex",
-    alignItems: "flex-end",
-  },
-  rangeFrom: {
-    flex: "1 1 calc(100% - 15px)",
-    minWidth: 0,
-  },
-  rangeTo: {
-    flex: "1 1 calc(100% - 15px)",
-    minWidth: 0,
-  },
-  rangeSeparator: {
-    flex: "0 0 30px",
-    minWidth: 0,
-    paddingBottom: 8,
-    textAlign: "center",
+  formLabel: {
+    color: theme.palette.grey[100],
+    fontWeight: theme.typography.fontWeightMedium,
+    lineHeight: 1.8,
   },
 }));
 
@@ -110,13 +97,16 @@ export const AudioSettings: React.FC = () => {
         fullWidth
         color="primary"
         icons={[<Pause key="pause" />, <PlayArrow key="play" />]}
+        variants={["contained", "contained"]}
         value={autoPlay}
         onChange={toggleAutoPlay}
       >
         {autoPlay ? "Pause" : "Play"}
       </ToggleButton>
       <FormControl className={classes.formControl} fullWidth>
-        Ambience
+        <Typography className={classes.formLabel} variant="overline">
+          Ambience
+        </Typography>
         <Slider
           value={ambienceInternal}
           onChange={(_, value) => setAmbienceInternal(value as number)}
@@ -127,7 +117,9 @@ export const AudioSettings: React.FC = () => {
         />
       </FormControl>
       <FormControl className={classes.formControl} fullWidth>
-        Beats Per Minute
+        <Typography className={classes.formLabel} variant="overline">
+          Beats Per Minute
+        </Typography>
         <Slider
           value={bpmInternal}
           onChange={(_, value) => setBpmInternal(value as number)}
@@ -138,7 +130,9 @@ export const AudioSettings: React.FC = () => {
         />
       </FormControl>
       <FormControl className={classes.formControl} fullWidth>
-        Octave Range
+        <Typography className={classes.formLabel} variant="overline">
+          Octave Range
+        </Typography>
         <Slider
           value={[octaveMin, octaveMax]}
           onChange={(_, values) => {
@@ -156,7 +150,9 @@ export const AudioSettings: React.FC = () => {
         />
       </FormControl>
       <FormControl className={classes.formControl} fullWidth>
-        Notes
+        <Typography className={classes.formLabel} variant="overline">
+          Notes
+        </Typography>
         <GridSelect
           color="primary"
           spacing={1}
