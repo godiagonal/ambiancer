@@ -5,7 +5,6 @@ import {
   Distortion,
   LowpassFilter,
   NoteGenerator,
-  Panner,
   Reverb,
   Synthesizer,
 } from "../audio";
@@ -19,7 +18,8 @@ export function synthMiddleware(): Middleware<unknown, RootState> {
   const reverb2 = new Reverb(context, "reverb2");
   const delay = new Delay(context, "delay");
   const lowpassFilter = new LowpassFilter(context, "lowpass");
-  const panner = new Panner(context, "panner");
+  // TODO: fix for mobile devices
+  // const panner = new Panner(context, "panner");
 
   const synth = new Synthesizer(context, false, "sawtooth");
   synth.audioBus.setFxChain([
@@ -28,7 +28,7 @@ export function synthMiddleware(): Middleware<unknown, RootState> {
     reverb,
     reverb2,
     lowpassFilter,
-    panner,
+    // panner,
   ]);
 
   const setAmbienceLevel = (level: number) => {
