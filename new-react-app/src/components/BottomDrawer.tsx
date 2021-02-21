@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useCallback } from "react";
 import { Swipeable, EventData } from "react-swipeable";
 import { makeStyles, useTheme } from "@material-ui/core";
 import { debounce } from "ts-debounce";
+import { ExpandMore } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -155,6 +156,20 @@ export const BottomDrawer: React.FC<BottomDrawerProps> = ({
       >
         <div ref={contentRef}>{children}</div>
       </Swipeable>
+      {/* TODO: implement properly */}
+      <div
+        style={{
+          position: "fixed",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          height: 36,
+          pointerEvents: "none",
+          textAlign: "center",
+        }}
+      >
+        <ExpandMore />
+      </div>
     </div>
   );
 };
