@@ -2,10 +2,8 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## To do
 
-- Implement "more" icon in BottomDrawer
-  - Idle animation
-  - Hide when expanded
 - Device orientation events
+- Light theme similar to old app?
 - Color scheme for visualization
 - 3D in visualization?
 
