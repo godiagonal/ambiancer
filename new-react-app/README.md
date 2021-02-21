@@ -1,5 +1,14 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## To do
+
+- Implement "more" icon in BottomDrawer
+  - Idle animation
+  - Hide when expanded
+- Device orientation events
+- Color scheme for visualization
+- 3D in visualization?
+
 ## Available Scripts
 
 In the project directory, you can run:
