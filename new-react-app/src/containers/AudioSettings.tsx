@@ -113,7 +113,7 @@ export const AudioSettings: React.FC = () => {
         value={autoPlay}
         onChange={toggleAutoPlay}
       >
-        Auto play
+        {autoPlay ? "Pause" : "Play"}
       </ToggleButton>
       <FormControl className={classes.formControl} fullWidth>
         Ambience

@@ -14,10 +14,12 @@ declare module "@material-ui/core/styles" {
   interface Theme {
     canvasBackground: CanvasBackground;
     audioSettingsClosedHeight: number;
+    audioSettingsWidth: number;
   }
   interface ThemeOptions {
     canvasBackground: CanvasBackground;
     audioSettingsClosedHeight: number;
+    audioSettingsWidth: number;
   }
 }
 
@@ -66,8 +68,9 @@ export const theme = createMuiTheme({
     fontWeightLight: 300,
   },
   canvasBackground: {
-    x: ["#FC9D9A", "#F9CDAD"],
+    x: ["#003f5c", "#bc5090"],
     y: ["#C8C8A9", "#83AF9B"],
   },
   audioSettingsClosedHeight: 140,
+  audioSettingsWidth: 300,
 });

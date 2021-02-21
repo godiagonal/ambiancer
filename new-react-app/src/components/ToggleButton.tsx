@@ -1,6 +1,6 @@
-import React, { useCallback, useRef } from "react";
+import React, { cloneElement, useCallback, useRef } from "react";
 import clsx from "clsx";
-import { Button, ButtonProps, makeStyles } from "@material-ui/core";
+import { Button, ButtonProps, IconProps, makeStyles } from "@material-ui/core";
 
 const useStyles = makeStyles(() => {
   return {
@@ -13,17 +13,32 @@ const useStyles = makeStyles(() => {
       pointerEvents: "none",
     },
     button: {},
+    iconButton: {
+      flex: "0 0 auto",
+      minWidth: 0,
+      padding: 7,
+      borderRadius: "50%",
+      textAlign: "center",
+      overflow: "visible", // Explicitly set the default value to solve a bug on IE 11
+    },
+    icon: {
+      fontSize: 20,
+      pointerEvents: "none",
+    },
   };
 });
 
 export type ToggleButtonProps = Omit<ButtonProps, "value" | "onChange"> & {
-  icons?: [React.ReactNode, React.ReactNode];
+  iconOnly?: boolean;
+  icons?: [React.ReactElement<IconProps>, React.ReactElement<IconProps>];
+  variants?: [ButtonProps["variant"], ButtonProps["variant"]];
   value: boolean;
   onChange?: (value: boolean) => void;
 };
 
 export const ToggleButton: React.FC<ToggleButtonProps> = ({
   icons,
+  variants = ["contained", "outlined"],
   value,
   onChange: onChangeFromProps,
   ...buttonProps
@@ -38,11 +53,24 @@ export const ToggleButton: React.FC<ToggleButtonProps> = ({
     [onChangeFromProps],
   );
 
-  const iconProps: ButtonProps = icons
-    ? {
-        startIcon: value ? icons[0] : icons[1],
-      }
-    : {};
+  const iconOnly = !buttonProps.children;
+  const icon = icons
+    ? cloneElement(value ? icons[0] : icons[1], {
+        className: classes.icon,
+      })
+    : undefined;
+  const startIconProp: ButtonProps =
+    icon && !iconOnly
+      ? {
+          startIcon: icon,
+        }
+      : {};
+  const childrenIconProp: ButtonProps =
+    icon && iconOnly
+      ? {
+          children: icon,
+        }
+      : {};
 
   return (
     <label className={classes.root} ref={labelRef}>
@@ -54,9 +82,12 @@ export const ToggleButton: React.FC<ToggleButtonProps> = ({
       />
       <Button
         {...buttonProps}
-        {...iconProps}
-        className={clsx(classes.button, buttonProps.className)}
-        variant={value ? "contained" : "outlined"}
+        {...startIconProp}
+        {...childrenIconProp}
+        className={clsx(classes.button, buttonProps.className, {
+          [classes.iconButton]: iconOnly,
+        })}
+        variant={value ? variants[0] : variants[1]}
         onClick={onClick}
       />
     </label>
